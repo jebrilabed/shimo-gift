@@ -1,0 +1,43 @@
+{
+  "name": "farasha-commerce",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @farasha/web",
+    "build:web": "npm run build --workspace @farasha/web",
+    "start:web": "npm run start --workspace @farasha/web",
+    "lint:web": "npm run lint --workspace @farasha/web",
+    "typecheck:web": "npm run typecheck --workspace @farasha/web",
+    "validate:web": "npm run lint:web && npm run typecheck:web && npm run build:web",
+    "test:auth": "npm run test:auth --workspace @farasha/web",
+    "test:admin": "npm run test:admin --workspace @farasha/web",
+    "test:orders": "npm run test:orders --workspace @farasha/web",
+    "test:cart": "npm run test:cart --workspace @farasha/web",
+    "test:checkout": "npm run test:checkout --workspace @farasha/web",
+    "test:phase7": "npm run test:phase7 --workspace @farasha/web",
+    "test:phase10": "npm run test:phase10 --workspace @farasha/web",
+    "test:phase11": "npm run test:phase11 --workspace @farasha/web",
+    "test:phase12": "npm run test:phase12 --workspace @farasha/web",
+    "test:phase13": "npm run test:phase13 --workspace @farasha/web",
+    "test:phase14": "npm run test:phase14 --workspace @farasha/web",
+    "test:phase15": "npm run test:phase15 --workspace @farasha/web",
+    "test:phase16": "npm run test:phase16 --workspace @farasha/web",
+    "test:deployment": "npm run test:deployment --workspace @farasha/web",
+    "auth:bootstrap-admin": "npm run auth:bootstrap-admin --workspace @farasha/web",
+    "db:generate": "npm run db:generate --workspace @farasha/web",
+    "db:validate": "npm run db:validate --workspace @farasha/web",
+    "db:format": "npm run db:format --workspace @farasha/web",
+    "db:migrate:dev": "npm run db:migrate:dev --workspace @farasha/web --",
+    "db:migrate:deploy": "npm run db:migrate:deploy --workspace @farasha/web",
+    "db:migrate:status": "npm run db:migrate:status --workspace @farasha/web"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.10.0"
+  }
+}

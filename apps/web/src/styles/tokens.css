@@ -1,0 +1,71 @@
+@theme inline {
+  --color-primary: var(--brand-primary);
+  --color-secondary: var(--brand-secondary);
+  --color-accent: var(--brand-accent);
+  --color-canvas: var(--surface-canvas);
+  --color-surface: var(--surface-raised);
+  --color-text: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-border: var(--border-subtle);
+  --color-success: var(--status-success);
+  --color-warning: var(--status-warning);
+  --color-error: var(--status-error);
+  --color-info: var(--status-info);
+  --color-logo-background: var(--logo-background);
+  --font-sans: var(--font-arabic);
+  --spacing-page: var(--space-page-gutter);
+  --spacing-section: var(--space-section);
+  --spacing-stack: var(--space-stack);
+  --radius-card: var(--shape-radius-card);
+  --radius-control: var(--shape-radius-control);
+  --shadow-card: var(--elevation-card);
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --duration-fast: var(--motion-fast);
+  --duration-standard: var(--motion-standard);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+:root {
+  color-scheme: light;
+
+  /* Brand colors */
+  --brand-primary: #e8799e;
+  --brand-primary-hover: #d95f87;
+  --brand-secondary: #fdf0f5;
+  --brand-secondary-hover: #fce2ec;
+  --brand-accent: #c4456f;
+  --logo-background: #f8a4c4;
+
+  --surface-canvas: #fdf9fa;
+  --surface-raised: #ffffff;
+  --text-primary: #1a181b;
+  --text-muted: #6e626b;
+  --border-subtle: #f0d5e1;
+  --surface-skeleton: #f7e4ec;
+  --surface-scrim: rgba(26, 24, 27, 0.52);
+
+  --status-success: #2e7d32;
+  --status-warning: #d97706;
+  --status-error: #dc2626;
+  --status-info: #e8799e;
+
+  --font-arabic: "Alexandria", "Cairo", "Noto Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --space-page-gutter: clamp(1rem, 4vw, 2.5rem);
+  --space-section: clamp(2rem, 5vw, 4rem);
+  --space-stack: 1.25rem;
+  --container-max: 76rem;
+  --container-reading: 48rem;
+  --shape-radius-card: 1.25rem;
+  --shape-radius-control: 0.75rem;
+  --shape-radius-pill: 999px;
+  --elevation-card: 0 10px 30px -10px rgba(232, 121, 158, 0.12), 0 4px 16px rgba(26, 24, 27, 0.03);
+  --motion-fast: 150ms;
+  --motion-standard: 250ms;
+  --duration-fast: 150ms;
+  --duration-standard: 250ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+

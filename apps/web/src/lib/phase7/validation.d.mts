@@ -1,0 +1,11 @@
+export const supportedCurrencies: readonly string[];
+export const storeCurrency: "ILS";
+export function parseRegistration(data: FormData): { ok: true; value: { name: string; email: string; password: string } } | { ok: false; errors: Record<string, string> };
+export function parseProfile(data: FormData): { ok: true; value: string } | { ok: false };
+export type ParsedAddress = { fullName: string; phone: string; addressLine: string; city: string; postalCode: string | null; notes: string | null; isDefault: boolean };
+export function parseAddress(data: FormData): { ok: true; value: ParsedAddress } | { ok: false; errors: Record<string, string> };
+export type ParsedStoreSettings = { storeName: string; description: string | null; currency: string; contactPhone: string | null; email: string | null; address: string | null; defaultLocale: string; isActive: boolean };
+export function parseStoreSettings(data: FormData): { ok: true; value: ParsedStoreSettings } | { ok: false; errors: Record<string, string> };
+export type ParsedSku = { id: string; skuCode: string; price: string; stockQuantity: number; variantOptions: Record<string, string | number | boolean>; isActive: boolean };
+export function parseSku(data: FormData): { ok: true; value: ParsedSku } | { ok: false; errors: Record<string, string> };
+export function parseImage(data: FormData): { ok: true; value: { imageId: string; url: string; providerPublicId: string | null; altText: string } } | { ok: false };

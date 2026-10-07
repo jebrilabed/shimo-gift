@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button, Container, Input, Select } from "@/components/ui";
@@ -151,7 +152,7 @@ export default async function StorefrontHome({ params, searchParams, categoryTra
                   </>
                 ) : (
                   <span className="store-home__hero-placeholder">
-                    Shimo Gift
+                    <Image alt="" height={512} src="/brand/shimo-logo.png" width={512} />
                   </span>
                 )}
               </div>

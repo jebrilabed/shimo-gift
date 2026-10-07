@@ -243,7 +243,7 @@ export async function saveProduct(_previous: AdminActionState, formData: FormDat
     revalidatePath("/ar/products");
     revalidatePath("/ar/products/[slug]", "page");
     revalidatePath("/sitemap.xml");
-    return { success: messages.productSaved };
+    return { success: messages.productSaved, ...(!productId ? { redirectTo: "/admin/products" } : {}) };
   });
 }
 
@@ -280,6 +280,12 @@ export async function saveCategory(_previous: AdminActionState, formData: FormDa
     const input = parsed.value;
     if (input.parentId && await categoryParentInvalid(input.parentId, categoryId || undefined)) {
       return { fieldErrors: { parentId: messages.validationInvalidParent } };
+    }
+    const selectedProductCount = input.productIds.length
+      ? await prisma.product.count({ where: { id: { in: input.productIds } } })
+      : 0;
+    if (selectedProductCount !== input.productIds.length) {
+      return { fieldErrors: { productIds: messages.validationInvalidCategoryProducts } };
     }
     const duplicate = await prisma.category.findFirst({
       where: { slug: input.slug, ...(categoryId ? { id: { not: categoryId } } : {}) },
@@ -334,6 +340,13 @@ export async function saveCategory(_previous: AdminActionState, formData: FormDa
         }
         if (!input.nameEn) await tx.categoryTranslation.deleteMany({ where: { categoryId: id, locale: Locale.EN } });
       }
+      await tx.product.updateMany({
+        where: { categoryId: id, ...(input.productIds.length ? { id: { notIn: input.productIds } } : {}) },
+        data: { categoryId: null },
+      });
+      if (input.productIds.length) {
+        await tx.product.updateMany({ where: { id: { in: input.productIds } }, data: { categoryId: id } });
+      }
       await tx.adminAuditLog.create({
         data: {
           actorUserId: admin.id,
@@ -353,7 +366,7 @@ export async function saveCategory(_previous: AdminActionState, formData: FormDa
     revalidatePath("/ar/categories/[slug]", "page");
     revalidatePath("/ar/products/[slug]", "page");
     revalidatePath("/sitemap.xml");
-    return { success: messages.categorySaved };
+    return { success: messages.categorySaved, ...(!categoryId ? { redirectTo: "/admin/categories" } : {}) };
   });
 }
 

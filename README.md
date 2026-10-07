@@ -1,6 +1,6 @@
-# Farasha Commerce
+# Shimo Gift
 
-Arabic-first Farasha platform. The `/ar` storefront,
+Arabic-first Shimo Gift storefront. The `/ar` storefront,
 published product catalog, guest/customer cart, checkout and order lifecycle now build
 on the PostgreSQL/Prisma foundation, server-side authentication, and protected admin
 catalog dashboard. Customer accounts and addresses, admin store settings, configurable

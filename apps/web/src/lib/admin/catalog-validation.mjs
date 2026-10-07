@@ -138,6 +138,7 @@ export function parseCategoryInput(formData) {
   const seoTitleEn = text(formData.get("seoTitleEn"));
   const seoDescriptionEn = text(formData.get("seoDescriptionEn"));
   const parentId = text(formData.get("parentId")) || null;
+  const productIds = [...new Set(formData.getAll("productIds").filter((value) => typeof value === "string").map((value) => value.trim()).filter(Boolean))];
 
   if (!nameAr) errors.nameAr = "required";
   else if (nameAr.length > 120) errors.nameAr = "tooLong";
@@ -165,6 +166,7 @@ export function parseCategoryInput(formData) {
       seoDescriptionEn,
       parentId,
       isActive: formData.get("isActive") === "on",
+      productIds,
     },
   };
 }

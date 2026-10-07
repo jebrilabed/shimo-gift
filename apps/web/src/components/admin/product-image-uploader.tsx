@@ -15,7 +15,7 @@ function uploadError(code: string | undefined) {
   if (code === "invalid-file-type") return "اختر صورة بصيغة JPG أو PNG أو WEBP.";
   if (code === "file-too-large") return "الحد الأقصى لحجم الصورة 4 ميجابايت.";
   if (code === "unauthorized") return "انتهت الجلسة أو لا تملك صلاحية رفع الصور.";
-  if (code === "upload-permission-denied") return "مفتاح Cloudinary لا يملك صلاحية رفع الصور. امنحه صلاحية إنشاء الصور للمجلد farasha/products.";
+  if (code === "upload-permission-denied") return "مفتاح Cloudinary لا يملك صلاحية رفع الصور. تحقّق من صلاحية إنشاء الصور في مجلد المنتجات.";
   return "تعذر رفع الصورة. حاول مرة أخرى.";
 }
 

@@ -6,4 +6,5 @@ export type AdminActionState = {
   error?: string;
   fieldErrors?: Record<string, string>;
   success?: string;
+  redirectTo?: string;
 };

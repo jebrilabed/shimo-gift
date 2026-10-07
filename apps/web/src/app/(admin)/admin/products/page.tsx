@@ -71,8 +71,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       </Card>
       {products.length ? (
         <>
-          <div className="ui-table-wrap">
-            <table className="ui-table">
+          <div className="ui-table-wrap admin-product-table-wrap">
+            <table className="ui-table admin-product-table">
+              <colgroup><col /><col /><col /><col /><col /><col /><col /></colgroup>
               <thead><tr><th>{messages.ar.primaryImage}</th><th>{messages.ar.category}</th><th>{messages.ar.price}</th><th>{messages.ar.stock}</th><th>{messages.ar.status}</th><th>{messages.ar.updated}</th><th>{messages.ar.actions}</th></tr></thead>
               <tbody>
                 {products.map((product) => {
@@ -80,13 +81,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   const statusLabel = product.status === "ACTIVE" ? messages.ar.active : product.status === "ARCHIVED" ? messages.ar.archived : messages.ar.draft;
                   return (
                     <tr key={product.id}>
-                      <td><div className="admin-product-cell"><span className="admin-product-thumb">{product.images[0]?.url ? <AdminProductThumbnail src={product.images[0].url} alt={product.images[0].altText ?? messages.ar.imageAlt} width={52} height={52} /> : messages.ar.noImage}</span><span className="admin-product-name"><Link href={`/admin/products/${product.id}`}>{product.translations[0]?.name ?? product.slug}</Link><small dir="ltr">{product.slug}</small></span></div></td>
-                      <td>{product.category?.translations[0]?.name ?? messages.ar.noCategory}</td>
-                      <td>{sku?.price.toString() ?? "—"}</td>
-                      <td>{sku?.stockQuantity ?? "—"}</td>
-                      <td><Badge variant={product.status === "ACTIVE" ? "success" : product.status === "ARCHIVED" ? "warning" : "info"}>{statusLabel}</Badge></td>
-                      <td>{new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium" }).format(product.updatedAt)}</td>
-                      <td><div className="admin-row-actions">
+                      <td data-label={messages.ar.primaryImage}><div className="admin-product-cell"><span className="admin-product-thumb">{product.images[0]?.url ? <AdminProductThumbnail src={product.images[0].url} alt={product.images[0].altText ?? messages.ar.imageAlt} width={52} height={52} /> : messages.ar.noImage}</span><span className="admin-product-name"><Link href={`/admin/products/${product.id}`}>{product.translations[0]?.name ?? product.slug}</Link><small dir="ltr">{product.slug}</small></span></div></td>
+                      <td data-label={messages.ar.category}>{product.category?.translations[0]?.name ?? messages.ar.noCategory}</td>
+                      <td data-label={messages.ar.price}>{sku?.price.toString() ?? "—"}</td>
+                      <td data-label={messages.ar.stock}>{sku?.stockQuantity ?? "—"}</td>
+                      <td data-label={messages.ar.status}><Badge variant={product.status === "ACTIVE" ? "success" : product.status === "ARCHIVED" ? "warning" : "info"}>{statusLabel}</Badge></td>
+                      <td data-label={messages.ar.updated}>{new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium" }).format(product.updatedAt)}</td>
+                      <td data-label={messages.ar.actions}><div className="admin-row-actions">
                         <Link className="ui-button ui-button--ghost ui-button--small" href={`/admin/products/${product.id}`}>{messages.ar.edit}</Link>
                         <ActionForm action={toggleProductStatus} fields={{ productId: product.id }} label={product.status === "ACTIVE" ? messages.ar.deactivate : messages.ar.activate} />
                         {product.status !== "ARCHIVED" && <ActionForm action={archiveProduct} fields={{ productId: product.id }} label={messages.ar.archive} confirmMessage={messages.ar.archiveConfirm} variant="ghost" />}

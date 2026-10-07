@@ -30,6 +30,7 @@ type CategoryInput = {
   seoDescriptionEn: string;
   parentId: string | null;
   isActive: boolean;
+  productIds: string[];
 };
 
 export function parseProductInput(formData: FormData):

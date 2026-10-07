@@ -27,7 +27,10 @@ export default async function CategoriesPage({ searchParams }: CategoriesPagePro
       take: ADMIN_PAGE_SIZE,
       include: {
         translations: { where: { locale: "AR" }, take: 1 },
-        parent: { include: { translations: { where: { locale: "AR" }, take: 1 } } },
+        products: {
+          orderBy: { createdAt: "desc" },
+          select: { id: true, slug: true, translations: { where: { locale: "AR" }, take: 1, select: { name: true } } },
+        },
         _count: { select: { products: true, children: true } },
       },
     }),
@@ -40,18 +43,19 @@ export default async function CategoriesPage({ searchParams }: CategoriesPagePro
       <header className="admin-page__header"><div><h1>{messages.ar.categories}</h1><p>{total} {messages.ar.categories}</p></div><Link className="ui-button ui-button--primary" href="/admin/categories/new">{messages.ar.addCategory}</Link></header>
       <Card><form className="admin-toolbar" method="get"><Input name="q" type="search" label={messages.ar.categorySearch} defaultValue={query} /><button className="ui-button ui-button--outline" type="submit">{messages.ar.applyFilter}</button></form></Card>
       {categories.length ? <>
-        <div className="ui-table-wrap"><table className="ui-table">
-          <thead><tr><th>{messages.ar.name}</th><th>{messages.ar.slug}</th><th>{messages.ar.parent}</th><th>{messages.ar.productCount}</th><th>{messages.ar.status}</th><th>{messages.ar.actions}</th></tr></thead>
+        <div className="ui-table-wrap"><table className="ui-table admin-category-table">
+          <colgroup><col /><col /><col /><col /><col /></colgroup>
+          <thead><tr><th>{messages.ar.categoryName}</th><th>{messages.ar.categoryDescription}</th><th>{messages.ar.status}</th><th>{messages.ar.productCount}</th><th>{messages.ar.actions}</th></tr></thead>
           <tbody>{categories.map((category) => {
-            const name = category.translations[0]?.name ?? category.slug;
+            const translation = category.translations[0];
+            const name = translation?.name ?? category.slug;
             const blocked = category._count.products > 0 || category._count.children > 0;
             const blockedText = category._count.products > 0 ? messages.ar.categoryHasProducts : messages.ar.categoryHasChildren;
             return <tr key={category.id}>
               <td><Link href={`/admin/categories/${category.id}`}>{name}</Link></td>
-              <td dir="ltr">{category.slug}</td>
-              <td>{category.parent?.translations[0]?.name ?? messages.ar.noParent}</td>
-              <td>{category._count.products}</td>
+              <td><div className="admin-category-description">{translation?.description || "—"}</div></td>
               <td><Badge variant={category.status === "ACTIVE" ? "success" : "warning"}>{category.status === "ACTIVE" ? messages.ar.active : messages.ar.archived}</Badge></td>
+              <td><div className="admin-category-product-list">{category.products.length ? category.products.map((product) => <Link href={`/admin/products/${product.id}`} key={product.id}>{product.translations[0]?.name ?? product.slug}</Link>) : <span>—</span>}</div></td>
               <td><div className="admin-row-actions"><Link className="ui-button ui-button--ghost ui-button--small" href={`/admin/categories/${category.id}`}>{messages.ar.edit}</Link>
                 {blocked ? <span className="admin-field-error">{blockedText}</span> : <ActionForm action={deleteCategory} fields={{ categoryId: category.id }} label={messages.ar.delete} confirmMessage={messages.ar.deleteCategoryConfirm} variant="ghost" />}
               </div></td>

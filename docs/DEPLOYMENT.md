@@ -46,7 +46,6 @@ call the web application, not FastAPI. The AI service has no PostgreSQL connecti
 | Web | `DATABASE_URL` | Always | Managed PostgreSQL URL. Use the provider's TLS instructions; URL-encode reserved characters in credentials. |
 | Web | `AUTH_SECRET` | Always | Random secret of at least 32 characters. Auth.js infers the host from the trusted platform; this code does not require a separate `AUTH_URL`. |
 | Web | `SITE_URL` | Always | Public canonical HTTPS origin; no path, query, credentials, localhost, or loopback address. |
-| Web | `SITE_NAME` | Optional | Public site name; defaults to Farasha. |
 | Web | `AI_SERVICE_URL` | To enable assistant | Deployed AI service origin, without the chat route suffix. |
 | Web + AI | `AI_INTERNAL_SERVICE_TOKEN` | To enable assistant | Same random 32+ character value in both server environments. Never expose it to the browser. |
 | AI | `AI_WEB_TOOLS_URL` | To enable assistant tools | Web's internal tools endpoint over HTTPS. |

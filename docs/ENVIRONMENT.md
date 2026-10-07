@@ -10,8 +10,8 @@ The web example uses placeholders for `DATABASE_URL` and `AUTH_SECRET`. Replace 
 in `.env.local`; do not copy a sample password or authentication secret into a real
 environment.
 
-The web and AI health/foundation routes need no secrets. The current web development
-defaults are `SITE_NAME` and `SITE_URL`. The AI service uses `AI_ENVIRONMENT`,
+The web and AI health/foundation routes need no secrets. The web site name is
+Shimo Gift; `SITE_URL` sets its canonical origin. The AI service uses `AI_ENVIRONMENT`,
 `AI_SERVICE_NAME`, `AI_HOST`, `AI_PORT`, and `AI_CORS_ORIGINS`.
 
 Integration values are listed as blank placeholders in the examples. WhatsApp
@@ -20,7 +20,7 @@ templates are configured; other future integrations remain unused:
 
 | Group | Variables | Current status |
 |---|---|---|
-| Site | `SITE_NAME`, `SITE_URL` | Used for basic web metadata/configuration |
+| Site | `SITE_URL` | Used for the canonical web origin; the public site name is Shimo Gift |
 | Database | `DATABASE_URL` | Required for PostgreSQL migrations and database-backed queries; schema formatting/validation/generation do not connect |
 | Auth | `AUTH_SECRET` | Required for Auth.js sessions; never expose through `NEXT_PUBLIC_*` |
 | Image storage | Cloudinary variables | Blank placeholders only; Phase 7 manages HTTPS image URLs and does not upload files |

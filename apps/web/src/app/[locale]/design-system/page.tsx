@@ -21,7 +21,7 @@ import {
 } from "@/components/ui";
 
 export const metadata = {
-  title: "معرض نظام التصميم | Farasha",
+  title: "معرض نظام التصميم | Shimo Gift",
   robots: { index: false, follow: false },
 };
 
@@ -73,22 +73,21 @@ export default async function DesignSystemPage({ params }: { params: Promise<{ l
             <div className="ui-demo__grid ui-demo__grid--two">
               <div className="ui-demo__logo">
                 <Image
-                  src="/brand/farasha-logo-reference.jpg"
-                  alt="شعار Farasha الأصلي مع جناح فراشة وحرف F"
+                  src="/brand/shimo-logo.png"
+                  alt="شعار Shimo Gift"
                   width={320}
                   height={320}
                   unoptimized
                 />
-                <p>مرجع JPEG بحجم 320×320 بكسل، مع خلفية مدمجة. عُرض دون تغيير أو انعكاس.</p>
+                <p>شعار Shimo Gift بصيغة PNG، معروض دون تغيير أو انعكاس.</p>
               </div>
               <div className="ui-demo__stack">
                 <p>
-                  لم يتوفر ملف متجهي أو نسخة شفافة أعلى دقة. يُستخدم الملف هنا كمرجع بصري صغير فقط؛
-                  يلزم توفير ملف SVG أو PNG شفاف عالي الدقة قبل استخدامه في مواد الإنتاج والطباعة.
+                  يُستخدم الشعار الحالي في واجهة المتجر. تُحفظ نسبه وألوانه كما هي، ولا يُعكس عند تنسيق
+                  الواجهة العربية.
                 </p>
                 <div className="ui-demo__notice">
-                  ألوان الواجهة مستمدة من درجات الجناح والخلفية والحروف في الصورة. دُرّج اللون الأساسي
-                  إلى درجة أغمق لتظل النصوص والأزرار مقروءة.
+                  ألوان الواجهة متناسقة مع هوية Shimo Gift، مع ضبط تباين النصوص والأزرار لضمان وضوحها.
                 </div>
               </div>
             </div>

@@ -258,6 +258,11 @@ export async function createOrderFromCart({
     await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
     await tx.cart.update({ where: { id: cart.id }, data: { status: CartStatus.CONVERTED } });
     return order;
+  }, {
+    // Cold starts through hosted PostgreSQL poolers can exceed Prisma's 2s default.
+    maxWait: 15_000,
+    // Checkout locks and updates several rows in one remote transaction.
+    timeout: 30_000,
   });
 }
 

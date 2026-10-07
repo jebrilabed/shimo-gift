@@ -379,10 +379,11 @@
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
+  transform: scale(1.18);
   transition: transform 500ms var(--ease-standard);
 }
 
-.store-home__hero:hover .store-home__hero-image img { transform: scale(1.05); }
+.store-home__hero:hover .store-home__hero-image img { transform: scale(1.22); }
 
 .store-home__hero-note {
   position: absolute;
@@ -414,13 +415,17 @@
   aspect-ratio: 1;
   place-items: center;
   border-radius: 50%;
-  border: 4px solid #ffffff;
+  border: 2px solid #ffffff;
   background: var(--logo-background);
   box-shadow: 0 1.5rem 3.5rem rgba(232, 121, 158, 0.25);
   overflow: hidden;
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: 800;
+}
+
+.store-home__hero-placeholder img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  background: var(--logo-background);
 }
 
 

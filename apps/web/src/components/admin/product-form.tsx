@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, Input, Select, Textarea } from "@/components/ui";
 import { adminMessages as messages } from "@/lib/admin/messages";
 import type { AdminActionState } from "@/lib/admin/config";
@@ -42,6 +43,7 @@ export function ProductForm({
   categories: { id: string; name: string }[];
 }) {
   const [state, action] = useActionState<AdminActionState, FormData>(saveProduct, {});
+  const router = useRouter();
   const [formValues, setFormValues] = useState(() => ({
     nameAr: values.nameAr,
     nameEn: values.nameEn,
@@ -61,6 +63,10 @@ export function ProductForm({
   const [uploadedImages, setUploadedImages] = useState<UploadedProductImage[]>([]);
   const [uploading, setUploading] = useState(false);
   const fieldError = (key: string) => state.fieldErrors?.[key];
+
+  useEffect(() => {
+    if (state.redirectTo) router.replace(state.redirectTo);
+  }, [router, state.redirectTo]);
 
   return (
     <Card>

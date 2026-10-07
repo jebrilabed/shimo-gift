@@ -1,1 +1,1 @@
-"""Farasha AI service package."""
+"""Shimo Gift AI service package."""

@@ -50,7 +50,7 @@ def make_web_tool_executor(settings: Settings, identity_token: str, locale: str)
 def build_store_tools(execute: ToolExecutor, *, allow_order_status: bool = True):
     @tool
     async def search_products(query: str) -> dict[str, Any]:
-        """Search active Farasha products by customer-entered product name or category."""
+        """Search active Shimo Gift products by customer-entered product name or category."""
         return await execute("search_products", {"query": query})
 
     @tool

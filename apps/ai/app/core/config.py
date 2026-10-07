@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     )
 
     environment: str = "development"
-    service_name: str = "Farasha AI Service"
+    service_name: str = "Shimo Gift AI Service"
     host: str = "127.0.0.1"
     port: int = 8000
     cors_origins: str = ""

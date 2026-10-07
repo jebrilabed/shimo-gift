@@ -176,6 +176,7 @@ export async function submitCheckoutAction(_previousState: CheckoutActionState, 
   const parsed = parseCheckoutInput(formData);
   if (!parsed.ok) return { fieldErrors: parsed.errors, values: parsed.values };
   const checkoutValues = parsed.value;
+  let checkoutStage = "session";
   try {
     const user = await getCurrentUser();
     const userId = user?.role === "CUSTOMER" ? user.id : null;
@@ -190,6 +191,7 @@ export async function submitCheckoutAction(_previousState: CheckoutActionState, 
       : null;
     if (!checkoutAttempt) return { error: messages.ar.checkoutUnavailable, values: checkoutValues };
 
+    checkoutStage = "create-order";
     const order = await createOrderFromCart({
       guestTokenHash,
       userId,
@@ -197,6 +199,7 @@ export async function submitCheckoutAction(_previousState: CheckoutActionState, 
       idempotencyKey: checkoutAttempt.idempotencyKey,
       quote: checkoutAttempt.quote,
     });
+    checkoutStage = "refresh-pages";
     revalidatePath("/ar");
     revalidatePath("/ar/cart");
     revalidatePath("/ar/orders");
@@ -214,8 +217,17 @@ export async function submitCheckoutAction(_previousState: CheckoutActionState, 
     }
     // Next redirects are thrown control-flow errors and must pass through untouched.
     if (error && typeof error === "object" && "digest" in error) throw error;
-    const code = error && typeof error === "object" && "code" in error ? String(error.code) : "unknown";
-    console.error("Checkout order creation failed.", { code });
+    const errorRecord = error && typeof error === "object" ? error as Record<string, unknown> : {};
+    const cause = errorRecord.cause && typeof errorRecord.cause === "object"
+      ? errorRecord.cause as Record<string, unknown>
+      : {};
+    console.error("Checkout order creation failed.", {
+      stage: checkoutStage,
+      name: typeof errorRecord.name === "string" ? errorRecord.name : "unknown",
+      code: typeof errorRecord.code === "string" ? errorRecord.code : "unknown",
+      causeName: typeof cause.name === "string" ? cause.name : "unknown",
+      causeCode: typeof cause.code === "string" ? cause.code : "unknown",
+    });
     return { error: messages.ar.databaseUnavailable, values: checkoutValues };
   }
   return { error: messages.ar.genericError, values: checkoutValues };

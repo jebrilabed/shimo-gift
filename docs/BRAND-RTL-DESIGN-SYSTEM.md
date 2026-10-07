@@ -2,11 +2,11 @@
 
 ## Logo asset
 
-The only supplied logo file is `apps/web/public/brand/farasha-logo-reference.jpg`, a 320×320 JPEG. Its pale blue-gray background is baked into the image and its edges are compressed. It is shown unchanged, at a small size, on a matching background in the development showcase. It is not a production master. Please provide an approved SVG or a large transparent PNG before production use, print work, or large placements. The logo and other non-directional images are never mirrored.
+The storefront uses `apps/web/public/brand/shimo-logo.png` for the Shimo Gift wordmark. Keep its proportions and colors intact; logos and other non-directional images are never mirrored in RTL layouts.
 
 ## Palette
 
-Tokens live in `apps/web/src/styles/tokens.css`; component styles consume those tokens rather than repeating hex values. The background and representative wing and wordmark colors were sampled from the supplied JPEG. Primary was darkened from the wing blue for text and control contrast. Semantic status colors communicate success, warning, error, and information; each state also has a visible text label or message.
+Tokens live in `apps/web/src/styles/tokens.css`; component styles consume those tokens rather than repeating hex values. Primary and supporting colors are tuned for the storefront identity and text/control contrast. Semantic status colors communicate success, warning, error, and information; each state also has a visible text label or message.
 
 | Token | HEX | Intended use |
 | --- | --- | --- |

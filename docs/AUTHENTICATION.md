@@ -42,6 +42,9 @@ controlled deployment operator session and then remove the temporary values.
 
 ## Abuse protection and limitations
 
+An authenticated administrator can change their own password from `/admin/settings`
+after confirming the current password. Password recovery remains unavailable.
+
 Unknown emails and incorrect passwords receive the same result; an asynchronous dummy
 scrypt verification reduces obvious account-timing differences. No registration,
 password reset, MFA, or rate limiter is included. Add distributed rate limiting and

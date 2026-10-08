@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/categories", label: messages.ar.categories, mark: "▦" },
   { href: "/admin/inventory", label: messages.ar.inventory, mark: "▤" },
   { href: "/admin/orders", label: messages.ar.orders, mark: "▧" },
+  { href: "/admin/settings", label: messages.ar.storeSettings, mark: "⚙" },
   { href: "/admin/notifications", label: messages.ar.notifications, mark: "◉" },
 ];
 

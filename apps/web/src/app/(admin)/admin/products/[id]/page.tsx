@@ -44,14 +44,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   };
   return <div className="admin-page"><header className="admin-page__header"><div><h1>{messages.ar.editProduct}</h1><p>{ar?.name ?? product.slug}</p></div><Link className="ui-button ui-button--ghost" href="/admin/products">{messages.ar.backToProducts}</Link></header><ProductForm values={{ ...values, imageUrls: [] }} categories={categories.map((category) => ({ id: category.id, name: category.translations[0]?.name ?? category.slug }))} /><ProductManagement
     productId={product.id}
-    skus={product.skus.map(({ id: skuId, price, stockQuantity, variantOptions, isActive }) => ({
-      id: skuId,
-      price: price.toString(),
-      stockQuantity,
-      variantOptions,
-      isActive,
-    }))}
-    images={product.images.map(({ id: imageId, url, providerPublicId, altText, sortOrder }) => ({
+    images={(product.images ?? []).map(({ id: imageId, url, providerPublicId, altText, sortOrder }) => ({
       id: imageId,
       url,
       providerPublicId,

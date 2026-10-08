@@ -84,6 +84,6 @@ export function parseImage(data) {
     const url = new URL(urlText);
     if (url.protocol !== "https:" || url.username || url.password || urlText.length > 2048) return { ok: false };
     if (providerPublicId && (!/^farasha\/products\/[0-9a-f-]{36}$/i.test(providerPublicId) || url.hostname !== "res.cloudinary.com" || !url.pathname.includes(providerPublicId))) return { ok: false };
-    return { ok: true, value: { imageId, url: url.href, providerPublicId: providerPublicId || null, altText: text(data.get("altText")).slice(0, 200) } };
+    return { ok: true, value: { imageId, url: url.href, providerPublicId: providerPublicId || null } };
   } catch { return { ok: false }; }
 }

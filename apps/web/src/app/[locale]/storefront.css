@@ -808,6 +808,45 @@
 .store-checkout-list li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1rem; border-block-end: 1px solid var(--border-subtle); padding-block: 0.75rem; }
 .store-checkout-list small { display: block; color: var(--text-muted); }
 
+.store-order-items-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background: #ffffff;
+  -webkit-overflow-scrolling: touch;
+}
+
+.store-order-items-table {
+  inline-size: 100%;
+  min-inline-size: 34rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: start;
+}
+
+.store-order-items-table th,
+.store-order-items-table td {
+  border-block-end: 1px solid var(--border-subtle);
+  padding: 0.9rem 1rem;
+}
+
+.store-order-items-table th {
+  color: var(--brand-primary);
+  background: var(--brand-secondary);
+  font-size: 0.85rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.store-order-items-table td { color: var(--text-primary); }
+.store-order-items-table th:not(:first-child),
+.store-order-items-table td:not(:first-child) { text-align: center; white-space: nowrap; }
+.store-order-items-table td:first-child { min-inline-size: 13rem; font-weight: 700; }
+.store-order-items-table td:first-child small { display: block; margin-block-start: 0.25rem; color: var(--text-muted); font-size: 0.82rem; font-weight: 500; }
+.store-order-items-table tbody tr:hover { background: rgba(248, 164, 196, 0.1); }
+.store-order-items-table tbody tr:last-child td { border-block-end: 0; }
+.store-order-items-table-wrap:focus-visible { outline: 3px solid var(--brand-primary); outline-offset: 3px; }
+
 /* BREADCRUMBS */
 .store-breadcrumbs { margin-block: 0 1.25rem; color: var(--text-muted); font-size: 0.88rem; }
 .store-breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.55rem; margin: 0; padding: 0; list-style: none; }

@@ -8,4 +8,4 @@ export type ParsedStoreSettings = { storeName: string; description: string | nul
 export function parseStoreSettings(data: FormData): { ok: true; value: ParsedStoreSettings } | { ok: false; errors: Record<string, string> };
 export type ParsedSku = { id: string; skuCode: string; price: string; stockQuantity: number; variantOptions: Record<string, string | number | boolean>; isActive: boolean };
 export function parseSku(data: FormData): { ok: true; value: ParsedSku } | { ok: false; errors: Record<string, string> };
-export function parseImage(data: FormData): { ok: true; value: { imageId: string; url: string; providerPublicId: string | null; altText: string } } | { ok: false };
+export function parseImage(data: FormData): { ok: true; value: { imageId: string; url: string; providerPublicId: string | null } } | { ok: false };

@@ -46,14 +46,7 @@ export function ProductForm({
   const router = useRouter();
   const [formValues, setFormValues] = useState(() => ({
     nameAr: values.nameAr,
-    nameEn: values.nameEn,
-    slug: values.slug,
     descriptionAr: values.descriptionAr,
-    descriptionEn: values.descriptionEn,
-    seoTitleAr: values.seoTitleAr,
-    seoDescriptionAr: values.seoDescriptionAr,
-    seoTitleEn: values.seoTitleEn,
-    seoDescriptionEn: values.seoDescriptionEn,
     price: values.price,
     compareAtPrice: values.compareAtPrice,
     stockQuantity: String(values.stockQuantity),
@@ -72,11 +65,18 @@ export function ProductForm({
     <Card>
       <form action={action} className="admin-form">
         {values.id && <input type="hidden" name="productId" value={values.id} />}
+        {values.id && <>
+          <input type="hidden" name="nameEn" value={values.nameEn} />
+          <input type="hidden" name="slug" value={values.slug} />
+          <input type="hidden" name="descriptionEn" value={values.descriptionEn} />
+          <input type="hidden" name="seoTitleAr" value={values.seoTitleAr} />
+          <input type="hidden" name="seoDescriptionAr" value={values.seoDescriptionAr} />
+          <input type="hidden" name="seoTitleEn" value={values.seoTitleEn} />
+          <input type="hidden" name="seoDescriptionEn" value={values.seoDescriptionEn} />
+        </>}
         {!values.id && <input type="hidden" name="imageAssets" value={JSON.stringify(uploadedImages.map(({ url, providerPublicId }) => ({ url, publicId: providerPublicId })))} />}
         <div className="admin-form__grid">
           <Input name="nameAr" label={messages.ar.productName} required maxLength={160} value={formValues.nameAr} onChange={(event) => setFormValues((current) => ({ ...current, nameAr: event.target.value }))} error={fieldError("nameAr")} />
-          {values.id && <Input name="nameEn" label={messages.ar.productNameEn} maxLength={160} value={formValues.nameEn} onChange={(event) => setFormValues((current) => ({ ...current, nameEn: event.target.value }))} error={fieldError("nameEn")} />}
-          {values.id && <Input name="slug" label={messages.ar.slug} required maxLength={180} dir="ltr" autoCapitalize="none" value={formValues.slug} onChange={(event) => setFormValues((current) => ({ ...current, slug: event.target.value }))} error={fieldError("slug")} />}
           <Input name="price" label={messages.ar.price} required type="number" min="0" max="9999999999.99" step="0.01" inputMode="decimal" value={formValues.price} onChange={(event) => setFormValues((current) => ({ ...current, price: event.target.value }))} error={fieldError("price")} />
           <Input name="compareAtPrice" label={messages.ar.compareAtPrice} type="number" min="0" max="9999999999.99" step="0.01" inputMode="decimal" value={formValues.compareAtPrice} onChange={(event) => setFormValues((current) => ({ ...current, compareAtPrice: event.target.value }))} error={fieldError("compareAtPrice")} />
           <Input name="stockQuantity" label={messages.ar.stock} required type="number" min="0" max="999999999" step="1" inputMode="numeric" value={formValues.stockQuantity} onChange={(event) => setFormValues((current) => ({ ...current, stockQuantity: event.target.value }))} error={fieldError("stockQuantity")} />
@@ -85,13 +85,6 @@ export function ProductForm({
             {categories.map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}
           </Select>
           <Textarea className="admin-form__wide" name="descriptionAr" label={messages.ar.description} rows={4} maxLength={5000} value={formValues.descriptionAr} onChange={(event) => setFormValues((current) => ({ ...current, descriptionAr: event.target.value }))} error={fieldError("descriptionAr")} />
-          {values.id && <Textarea className="admin-form__wide" name="descriptionEn" label={messages.ar.descriptionEn} rows={3} maxLength={5000} value={formValues.descriptionEn} onChange={(event) => setFormValues((current) => ({ ...current, descriptionEn: event.target.value }))} error={fieldError("descriptionEn")} />}
-          {values.id && <>
-            <Input className="admin-form__wide" name="seoTitleAr" label="عنوان SEO بالعربية" maxLength={180} value={formValues.seoTitleAr} onChange={(event) => setFormValues((current) => ({ ...current, seoTitleAr: event.target.value }))} error={fieldError("seoTitleAr")} />
-            <Textarea className="admin-form__wide" name="seoDescriptionAr" label="وصف SEO بالعربية" rows={3} maxLength={500} value={formValues.seoDescriptionAr} onChange={(event) => setFormValues((current) => ({ ...current, seoDescriptionAr: event.target.value }))} error={fieldError("seoDescriptionAr")} />
-            <Input className="admin-form__wide" dir="ltr" name="seoTitleEn" label="SEO title in English" maxLength={180} value={formValues.seoTitleEn} onChange={(event) => setFormValues((current) => ({ ...current, seoTitleEn: event.target.value }))} error={fieldError("seoTitleEn")} />
-            <Textarea className="admin-form__wide" dir="ltr" name="seoDescriptionEn" label="SEO description in English" rows={3} maxLength={500} value={formValues.seoDescriptionEn} onChange={(event) => setFormValues((current) => ({ ...current, seoDescriptionEn: event.target.value }))} error={fieldError("seoDescriptionEn")} />
-          </>}
           {!values.id && <div className="admin-form__wide admin-product-image-field">
             <ProductImageUploader
               maxFiles={8 - uploadedImages.length}

@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Badge, Card, Container } from "@/components/ui";
 import { getCurrentUser } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
-import { addressParts, formatMoney } from "@/lib/storefront/format";
+import { addressParts, displayVariantOptions, formatMoney } from "@/lib/storefront/format";
 import { orderStatusLabel, paymentStatusLabel } from "@/lib/storefront/order-labels";
 import { storefrontMessages as messages } from "@/lib/storefront/messages";
 
@@ -25,7 +25,7 @@ export default async function MyOrderDetails({ params }: { params: Promise<{ ord
       total: true,
       currency: true,
       shippingAddress: true,
-      items: { orderBy: { createdAt: "asc" }, select: { productNameSnapshot: true, unitPrice: true, quantity: true, subtotal: true } },
+      items: { orderBy: { createdAt: "asc" }, select: { id: true, productNameSnapshot: true, variantSnapshot: true, unitPrice: true, quantity: true, subtotal: true } },
     },
   });
   if (!order) notFound();
@@ -41,7 +41,17 @@ export default async function MyOrderDetails({ params }: { params: Promise<{ ord
           <p>{messages.ar.paymentStatus}: {paymentStatusLabel(order.paymentStatus)}</p>
           {shippingAddress.address && <p>{messages.ar.addressInfo}: {shippingAddress.address}{shippingAddress.city ? `، ${shippingAddress.city}` : ""}</p>}
           <h2>{messages.ar.orderedItems}</h2>
-          <ul className="store-checkout-list">{order.items.map((item, index) => <li key={`${item.productNameSnapshot}-${index}`}><span>{item.productNameSnapshot} × {item.quantity}<small>{formatMoney(item.unitPrice, order.currency)} × {item.quantity}</small></span><strong>{formatMoney(item.subtotal, order.currency)}</strong></li>)}</ul>
+          <div className="store-order-items-table-wrap" role="region" aria-label={messages.ar.orderedItems} tabIndex={0}>
+            <table className="store-order-items-table">
+              <thead><tr><th>{messages.ar.product}</th><th>{messages.ar.price}</th><th>{messages.ar.quantity}</th><th>{messages.ar.lineTotal}</th></tr></thead>
+              <tbody>{order.items.map((item) => <tr key={item.id}>
+                <td>{item.productNameSnapshot}{displayVariantOptions(item.variantSnapshot) && <small>{displayVariantOptions(item.variantSnapshot)}</small>}</td>
+                <td>{formatMoney(item.unitPrice, order.currency)}</td>
+                <td>{item.quantity}</td>
+                <td>{formatMoney(item.subtotal, order.currency)}</td>
+              </tr>)}</tbody>
+            </table>
+          </div>
           <p className="store-summary__row"><span>{messages.ar.subtotal}</span><strong>{formatMoney(order.subtotal, order.currency)}</strong></p>
           <p className="store-summary__row"><span>{messages.ar.shippingCost}</span><strong>{formatMoney(order.shippingCost, order.currency)}</strong></p>
           <p className="store-summary__row"><span>{messages.ar.total}</span><strong>{formatMoney(order.total, order.currency)}</strong></p>

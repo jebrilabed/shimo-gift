@@ -54,7 +54,8 @@ export async function saveImage(_previous: ManagementState, data: FormData): Pro
   let admin; try { admin = await requireAdmin(); } catch { return { error: messages.ar.imageUnauthorized }; }
   const parsed = parseImage(data); const productId = fieldText(data, "productId");
   if (!parsed.ok || !productId || productId.length > 64) return { error: messages.ar.imageInvalid };
-  const { imageId, ...value } = parsed.value;
+  const { imageId } = parsed.value;
+  const imageData = { url: parsed.value.url, providerPublicId: parsed.value.providerPublicId };
   try {
     await prisma.$transaction(async (tx) => {
       const product = await tx.product.findUnique({ where: { id: productId }, select: { id: true } });
@@ -62,11 +63,11 @@ export async function saveImage(_previous: ManagementState, data: FormData): Pro
       if (imageId) {
         const current = await tx.productImage.findFirst({ where: { id: imageId, productId }, select: { id: true } });
         if (!current) throw new Error("image-not-owned");
-        await tx.productImage.update({ where: { id: imageId }, data: value });
+        await tx.productImage.update({ where: { id: imageId }, data: imageData });
       } else {
         const order = await tx.productImage.count({ where: { productId } });
         if (order >= 8) throw new Error("image-limit");
-        await tx.productImage.create({ data: { ...value, productId, sortOrder: order } });
+        await tx.productImage.create({ data: { ...imageData, altText: null, productId, sortOrder: order } });
       }
       await tx.adminAuditLog.create({ data: { actorUserId: admin.id, action: imageId ? "catalog.image.update" : "catalog.image.create", entityType: "ProductImage", entityId: imageId || productId, metadata: { productId } } });
     });

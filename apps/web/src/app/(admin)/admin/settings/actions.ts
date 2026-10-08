@@ -17,7 +17,7 @@ function passwordField(formData: FormData, key: string) {
 
 export async function changeAdminPassword(_previous: PasswordState, formData: FormData): Promise<PasswordState> {
   let admin;
-  try { admin = await requireAdmin(); } catch { return { error: adminMessages.ar.settingsUnauthorized }; }
+  try { admin = await requireAdmin(); } catch { return { error: adminMessages.ar.denied }; }
 
   const currentPassword = passwordField(formData, "currentPassword");
   const newPassword = passwordField(formData, "newPassword");

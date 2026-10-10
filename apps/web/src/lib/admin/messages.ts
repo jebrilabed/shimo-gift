@@ -8,6 +8,7 @@ export const adminMessages = {
     inventory: "المخزون",
     orders: "الطلبات",
     signOut: "تسجيل الخروج",
+    openStore: "فتح المتجر",
     overview: "نظرة عامة",
     welcome: "مرحباً بك في مساحة إدارة Shimo Gift.",
     totalProducts: "إجمالي المنتجات",

@@ -16,6 +16,9 @@ export function AdminShell({ children, email }: { children: React.ReactNode; ema
           <span><strong>{messages.ar.brand}</strong><small>{messages.ar.admin}</small></span>
         </Link>
         <AdminNavigation variant="sidebar" />
+        <Link className="admin-store-link" href="/ar" rel="noopener noreferrer" target="_blank">
+          <span aria-hidden="true">↗</span>{messages.ar.openStore}
+        </Link>
         <div className="admin-sidebar__footer">
           <span className="admin-identity__avatar" aria-hidden="true">{email?.slice(0, 1).toLocaleUpperCase("ar") ?? "م"}</span>
           <span className="admin-identity__text"><strong>{messages.ar.admin}</strong><small dir="ltr">{email ?? ""}</small></span>
@@ -34,6 +37,9 @@ export function AdminShell({ children, email }: { children: React.ReactNode; ema
           </Link>
           <div className="admin-mobile-header__tools">
           <AdminNavigation variant="mobile" />
+          <Link className="admin-store-link admin-store-link--mobile" href="/ar" rel="noopener noreferrer" target="_blank">
+            <span aria-hidden="true">↗</span>{messages.ar.openStore}
+          </Link>
           <form action={async () => { "use server"; await signOut({ redirectTo: "/ar/login" }); }}>
             <Button type="submit" variant="outline" size="small">{messages.ar.signOut}</Button>
           </form>

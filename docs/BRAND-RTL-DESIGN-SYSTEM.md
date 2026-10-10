@@ -2,7 +2,7 @@
 
 ## Logo asset
 
-The storefront uses `apps/web/public/brand/shimo-logo.png` for the Shimo Gift wordmark. Keep its proportions and colors intact; logos and other non-directional images are never mirrored in RTL layouts.
+The storefront uses `apps/web/public/brand/shimo-logo-transparent.png` for the Shimo Gift wordmark. Keep its proportions and colors intact; logos and other non-directional images are never mirrored in RTL layouts.
 
 ## Palette
 

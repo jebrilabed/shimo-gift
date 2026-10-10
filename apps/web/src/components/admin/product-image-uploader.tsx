@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { ToastMessage } from "@/components/ui/toast";
 
 export type UploadedProductImage = {
   url: string;
@@ -81,7 +82,7 @@ export function ProductImageUploader({ maxFiles, onUploaded, onUploadingChange }
     />
     <p className="admin-image-upload__hint">JPG أو PNG أو WEBP · حتى 4 ميجابايت للصورة · 8 صور كحد أقصى</p>
     {uploading && <p aria-live="polite" className="admin-feedback">جاري رفع الصور…</p>}
-    {status && <p aria-live="polite" className="admin-feedback admin-feedback--success">{status}</p>}
-    {error && <p aria-live="polite" className="admin-feedback admin-feedback--error" role="alert">{error}</p>}
+    <ToastMessage eventKey={status} message={status} tone="success" />
+    <ToastMessage eventKey={error} message={error} tone="error" />
   </div>;
 }

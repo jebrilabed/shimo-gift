@@ -8,6 +8,9 @@ import { buildAdminOrderWhere, parseAdminOrderFilters } from "@/lib/admin/order-
 import { orderStatusLabel, paymentStatusLabel } from "@/lib/storefront/order-labels";
 import { storefrontMessages as messages } from "@/lib/storefront/messages";
 import { formatMoney } from "@/lib/storefront/format";
+import { adminMessages } from "@/lib/admin/messages";
+import { DeleteOrderForm } from "@/components/admin/delete-order-form";
+import { ToastMessage } from "@/components/ui/toast";
 
 const statusOptions = Object.values(OrderStatus);
 const notices: Record<string, string> = {
@@ -20,6 +23,7 @@ const notices: Record<string, string> = {
   invalid: messages.ar.genericError,
   alreadyCancelled: messages.ar.alreadyCancelled,
   restockUnavailable: messages.ar.restockUnavailable,
+  deleted: adminMessages.ar.orderDeleted,
 };
 
 export default async function AdminOrdersPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
@@ -53,36 +57,49 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   })}`;
 
   return (
-    <Container className="admin-content">
-      <header className="admin-page-header"><div><p className="admin-eyebrow">{messages.ar.admin}</p><h1>{messages.ar.adminOrders}</h1><p>{total} {messages.ar.orderCount}</p></div></header>
-      {notice && notices[notice] && <p className={`store-alert ${notice === "updated" ? "store-alert--success" : "store-alert--error"}`} role="status">{notices[notice]}</p>}
-      <form className="store-filter-row" method="get">
-        <Input defaultValue={query} label={messages.ar.searchOrders} maxLength={120} name="q" type="search" />
-        <Select defaultValue={status ?? ""} label={messages.ar.statusFilter} name="status">
-          <option value="">{messages.ar.allStatuses}</option>
-          {statusOptions.map((value) => <option key={value} value={value}>{orderStatusLabel(value)}</option>)}
-        </Select>
-        <Select defaultValue={paymentStatus} label={messages.ar.paymentStatusFilter} name="paymentStatus">
-          <option value="">{messages.ar.allPaymentStatuses}</option>
-          {Object.values(PaymentStatus).map((value) => <option key={value} value={value}>{paymentStatusLabel(value)}</option>)}
-        </Select>
-        <Input defaultValue={filters.fromValue} label={messages.ar.orderDateFrom} name="from" type="date" />
-        <Input defaultValue={filters.toValue} label={messages.ar.orderDateTo} name="to" type="date" />
-        <Button type="submit" variant="outline">{messages.ar.applyFilter}</Button>
+    <Container className="admin-page admin-orders-page">
+      <header className="admin-page__header admin-orders-header">
+        <div>
+          <p className="admin-eyebrow">{messages.ar.admin}</p>
+          <h1>{messages.ar.adminOrders}</h1>
+          <p className="admin-orders-header__count"><strong>{total}</strong> {messages.ar.orderCount}</p>
+        </div>
+      </header>
+      <ToastMessage message={notice ? notices[notice] : undefined} tone={notice === "updated" || notice === "deleted" ? "success" : "error"} />
+      <form aria-label={messages.ar.adminOrders} className="admin-orders-filters" method="get">
+        <div className="admin-orders-filters__fields">
+          <Input className="admin-orders-filters__search" defaultValue={query} label={messages.ar.searchOrders} maxLength={120} name="q" type="search" />
+          <Select defaultValue={status} label={messages.ar.statusFilter} name="status">
+            <option value="">{messages.ar.allStatuses}</option>
+            {statusOptions.map((value) => <option key={value} value={value}>{orderStatusLabel(value)}</option>)}
+          </Select>
+          <Select defaultValue={paymentStatus} label={messages.ar.paymentStatusFilter} name="paymentStatus">
+            <option value="">{messages.ar.allPaymentStatuses}</option>
+            {Object.values(PaymentStatus).map((value) => <option key={value} value={value}>{paymentStatusLabel(value)}</option>)}
+          </Select>
+          <Input defaultValue={filters.fromValue} label={messages.ar.orderDateFrom} name="from" type="date" />
+          <Input defaultValue={filters.toValue} label={messages.ar.orderDateTo} name="to" type="date" />
+          <div className="admin-orders-filters__actions">
+            <Button type="submit">{messages.ar.applyFilter}</Button>
+            <Link className="admin-orders-filters__reset" href="/admin/orders">مسح الفلاتر</Link>
+          </div>
+        </div>
       </form>
-      {filters.dateError && <p className="store-alert store-alert--error" role="alert">{messages.ar.invalidOrderDateRange}</p>}
+      {filters.dateError && <ToastMessage message={messages.ar.invalidOrderDateRange} tone="warning" />}
       {!orders.length ? (
         <div className="ui-state"><span className="ui-state__symbol" aria-hidden="true">▧</span><h2>{messages.ar.noAdminOrders}</h2></div>
       ) : (
-        <div className="store-table-wrap">
-          <table className="store-table">
-            <thead><tr><th>{messages.ar.orderNumber}</th><th>{messages.ar.customer}</th><th>{messages.ar.phone}</th><th>{messages.ar.total}</th><th>{messages.ar.status}</th><th>{messages.ar.paymentStatus}</th><th>{messages.ar.orderDate}</th><th>{messages.ar.orderDateUpdated}</th><th>{messages.ar.actions}</th></tr></thead>
+        <div aria-label={messages.ar.adminOrders} className="ui-table-wrap admin-orders-table-wrap" role="region" tabIndex={0}>
+          <table className="ui-table admin-orders-table">
+            <thead><tr><th>{messages.ar.orderNumber}</th><th>{messages.ar.customer}</th><th>{adminMessages.ar.phoneNumber}</th><th>{messages.ar.total}</th><th>{messages.ar.status} / {messages.ar.paymentStatus}</th><th>{messages.ar.orderDate}</th><th>{messages.ar.actions}</th></tr></thead>
             <tbody>{orders.map((order) => <tr key={order.id}>
-              <td dir="ltr">{order.orderNumber}</td><td>{order.contactName}</td><td dir="ltr">{order.contactPhone}</td>
-              <td>{formatMoney(order.total, order.currency)}</td><td><Badge>{orderStatusLabel(order.status)}</Badge></td><td><Badge>{paymentStatusLabel(order.paymentStatus)}</Badge></td>
-              <td>{new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium", timeStyle: "short" }).format(order.createdAt)}</td>
-              <td>{new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium", timeStyle: "short" }).format(order.updatedAt)}</td>
-              <td><Link href={`/admin/orders/${encodeURIComponent(order.id)}`}>{messages.ar.details}</Link></td>
+              <td data-label={messages.ar.orderNumber}><span className="admin-orders-table__order"><Link className="admin-orders-table__number" dir="ltr" href={`/admin/orders/${encodeURIComponent(order.id)}`}>{order.orderNumber}</Link><small>{messages.ar.details}</small></span></td>
+              <td data-label={messages.ar.customer}><span className="admin-orders-table__customer"><strong>{order.contactName}</strong></span></td>
+              <td data-label={adminMessages.ar.phoneNumber}><span className="admin-orders-table__phone" dir="ltr">{order.contactPhone}</span></td>
+              <td data-label={messages.ar.total}><strong className="admin-orders-table__total">{formatMoney(order.total, order.currency)}</strong></td>
+              <td data-label={`${messages.ar.status} / ${messages.ar.paymentStatus}`}><span className="admin-orders-table__statuses"><span><small>{messages.ar.status}</small><Badge>{orderStatusLabel(order.status)}</Badge></span><span><small>{messages.ar.paymentStatus}</small><Badge>{paymentStatusLabel(order.paymentStatus)}</Badge></span></span></td>
+              <td data-label={messages.ar.orderDate}><span className="admin-orders-table__dates"><time dateTime={order.createdAt.toISOString()}>{new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium", timeStyle: "short" }).format(order.createdAt)}</time><small>{messages.ar.orderDateUpdated}: {new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium", timeStyle: "short" }).format(order.updatedAt)}</small></span></td>
+              <td data-label={messages.ar.actions}><DeleteOrderForm orderId={order.id} label={adminMessages.ar.deleteOrder} confirmMessage={adminMessages.ar.deleteOrderConfirm} /></td>
             </tr>)}</tbody>
           </table>
         </div>

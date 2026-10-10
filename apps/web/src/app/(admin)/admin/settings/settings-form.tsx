@@ -1,6 +1,7 @@
 "use client";
 import { useActionState } from "react";
 import { Button, Input, Select, Textarea } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { saveStoreSettings } from "./actions";
 import { phase7Messages as messages } from "@/lib/phase7/messages";
 type SettingsValues = { storeName: string; description: string; contactPhone: string; email: string; address: string; isActive: boolean };
@@ -16,7 +17,7 @@ export function SettingsForm({ values }: { values: SettingsValues }) {
     <Textarea label={messages.ar.storeAddress} name="address" rows={3} maxLength={500} defaultValue={values.address} />
     <Select label={messages.ar.defaultLocale} name="defaultLocale" defaultValue="ar"><option value="ar">{messages.ar.Arabic}</option></Select>
     <label className="admin-checkbox"><input type="checkbox" name="isActive" defaultChecked={values.isActive} /><span>{messages.ar.storeActive}</span></label>
-    {state.error && <p className="admin-feedback admin-feedback--error" role="alert">{state.error}</p>}{state.success && <p className="admin-feedback admin-feedback--success" role="status">{state.success}</p>}
-    <div className="admin-page__actions"><Button loading={pending}>{messages.ar.saveSettings}</Button></div>
+    <ToastMessage eventKey={state} message={state.error} tone="error" /><ToastMessage eventKey={state} message={state.success} tone="success" />
+    <div className="admin-page__actions"><Button type="submit" loading={pending}>{messages.ar.saveSettings}</Button></div>
   </form>;
 }

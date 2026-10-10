@@ -14,11 +14,12 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function OrderConfirmationPage({ params }: { params: Promise<{ orderNumber: string }> }) {
   const { orderNumber } = await params;
-  if (!/^FAR-[A-F0-9]{32}$/.test(orderNumber)) notFound();
+  const normalizedOrderNumber = orderNumber.toUpperCase();
+  if (!/^(?:FAR-[A-F0-9]{32}|OF-[0-9A-HJKMNP-TV-Z]{13})$/.test(normalizedOrderNumber)) notFound();
   const user = await getCurrentUser();
   const userId = user?.role === "CUSTOMER" ? user.id : null;
   const order = await prisma.order.findUnique({
-    where: { orderNumber },
+    where: { orderNumber: normalizedOrderNumber },
     select: {
       orderNumber: true,
       status: true,

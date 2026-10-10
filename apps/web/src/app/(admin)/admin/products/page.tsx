@@ -4,7 +4,7 @@ import { ActionForm } from "@/components/admin/action-form";
 import { AdminProductThumbnail } from "@/components/admin/admin-product-thumbnail";
 import { adminMessages as messages } from "@/lib/admin/messages";
 import { ADMIN_PAGE_SIZE } from "@/lib/admin/config";
-import { archiveProduct, toggleProductStatus } from "../actions";
+import { deleteProduct, toggleProductStatus } from "../actions";
 import { requireAdminPage } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
 
@@ -73,15 +73,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <>
           <div className="ui-table-wrap admin-product-table-wrap">
             <table className="ui-table admin-product-table">
-              <colgroup><col /><col /><col /><col /><col /><col /><col /></colgroup>
-              <thead><tr><th>{messages.ar.primaryImage}</th><th>{messages.ar.category}</th><th>{messages.ar.price}</th><th>{messages.ar.stock}</th><th>{messages.ar.status}</th><th>{messages.ar.updated}</th><th>{messages.ar.actions}</th></tr></thead>
+              <colgroup><col /><col /><col /><col /><col /><col /><col /><col /></colgroup>
+              <thead><tr><th>{messages.ar.primaryImage}</th><th>{messages.ar.productName}</th><th>{messages.ar.category}</th><th>{messages.ar.price}</th><th>{messages.ar.stock}</th><th>{messages.ar.status}</th><th>{messages.ar.updated}</th><th>{messages.ar.actions}</th></tr></thead>
               <tbody>
                 {products.map((product) => {
                   const sku = product.skus[0];
                   const statusLabel = product.status === "ACTIVE" ? messages.ar.active : product.status === "ARCHIVED" ? messages.ar.archived : messages.ar.draft;
                   return (
                     <tr key={product.id}>
-                      <td data-label={messages.ar.primaryImage}><div className="admin-product-cell"><span className="admin-product-thumb">{product.images[0]?.url ? <AdminProductThumbnail src={product.images[0].url} alt={product.images[0].altText ?? messages.ar.imageAlt} width={52} height={52} /> : messages.ar.noImage}</span><span className="admin-product-name"><Link href={`/admin/products/${product.id}`}>{product.translations[0]?.name ?? product.slug}</Link><small dir="ltr">{product.slug}</small></span></div></td>
+                      <td className="admin-product-image-cell" data-label={messages.ar.primaryImage}><span className="admin-product-thumb">{product.images[0]?.url ? <AdminProductThumbnail src={product.images[0].url} alt={product.images[0].altText ?? messages.ar.imageAlt} width={52} height={52} /> : messages.ar.noImage}</span></td>
+                      <td data-label={messages.ar.productName}><span className="admin-product-name"><Link href={`/admin/products/${product.id}`}>{product.translations[0]?.name ?? product.slug}</Link><small dir="ltr">{product.slug}</small></span></td>
                       <td data-label={messages.ar.category}>{product.category?.translations[0]?.name ?? messages.ar.noCategory}</td>
                       <td data-label={messages.ar.price}>{sku?.price.toString() ?? "—"}</td>
                       <td data-label={messages.ar.stock}>{sku?.stockQuantity ?? "—"}</td>
@@ -90,7 +91,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       <td data-label={messages.ar.actions}><div className="admin-row-actions">
                         <Link className="ui-button ui-button--ghost ui-button--small" href={`/admin/products/${product.id}`}>{messages.ar.edit}</Link>
                         <ActionForm action={toggleProductStatus} fields={{ productId: product.id }} label={product.status === "ACTIVE" ? messages.ar.deactivate : messages.ar.activate} />
-                        {product.status !== "ARCHIVED" && <ActionForm action={archiveProduct} fields={{ productId: product.id }} label={messages.ar.archive} confirmMessage={messages.ar.archiveConfirm} variant="ghost" />}
+                        <ActionForm action={deleteProduct} fields={{ productId: product.id }} label={messages.ar.delete} confirmMessage={messages.ar.deleteProductConfirm} variant="ghost" className="admin-delete-button" />
                       </div></td>
                     </tr>
                   );

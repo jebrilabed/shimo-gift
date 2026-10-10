@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, Input, Textarea } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { adminMessages as messages } from "@/lib/admin/messages";
 import type { AdminActionState } from "@/lib/admin/config";
 import { saveCategory } from "@/app/(admin)/admin/actions";
@@ -89,9 +90,9 @@ export function CategoryForm({
           )) : <p>{messages.ar.noProductsAvailable}</p>}
           {fieldError("productIds") && <p className="admin-field-error" role="alert">{fieldError("productIds")}</p>}
         </fieldset>
-        {state.error && <p className="admin-feedback admin-feedback--error" role="alert">{state.error}</p>}
-        {state.success && <p className="admin-feedback admin-feedback--success" role="status">{state.success}</p>}
-        {state.fieldErrors && <p className="admin-feedback admin-feedback--error" role="alert">{messages.ar.genericError}</p>}
+        <ToastMessage eventKey={state} message={state.error} tone="error" />
+        <ToastMessage eventKey={state} message={state.success} tone="success" />
+        <ToastMessage eventKey={state} message={state.fieldErrors ? messages.ar.genericError : undefined} tone="warning" />
         <div className="admin-page__actions"><SubmitButton>{messages.ar.save}</SubmitButton><Link className="ui-button ui-button--ghost" href="/admin/categories">{messages.ar.cancel}</Link></div>
       </form>
     </Card>

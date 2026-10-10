@@ -26,18 +26,18 @@ export const metadata = {
 };
 
 const palette = [
-  { name: "أساسي", hex: "#24627A", css: "--brand-primary", text: "--surface-raised" },
-  { name: "ثانوي", hex: "#92D0DF", css: "--brand-secondary", text: "--text-primary" },
-  { name: "مساند", hex: "#577992", css: "--brand-accent", text: "--surface-raised" },
-  { name: "خلفية", hex: "#E6EEF0", css: "--surface-canvas", text: "--text-primary" },
+  { name: "أساسي", hex: "#C43C78", css: "--brand-primary", text: "--surface-raised" },
+  { name: "ثانوي", hex: "#FCEAF2", css: "--brand-secondary", text: "--text-primary" },
+  { name: "مساند", hex: "#5B2941", css: "--brand-accent", text: "--surface-raised" },
+  { name: "خلفية", hex: "#FFF9FC", css: "--surface-canvas", text: "--text-primary" },
   { name: "سطح", hex: "#FFFFFF", css: "--surface-raised", text: "--text-primary" },
-  { name: "نص", hex: "#252928", css: "--text-primary", text: "--surface-raised" },
-  { name: "نص هادئ", hex: "#58676E", css: "--text-muted", text: "--surface-raised" },
-  { name: "حدود", hex: "#718991", css: "--border-subtle", text: "--surface-raised" },
+  { name: "نص", hex: "#20171B", css: "--text-primary", text: "--surface-raised" },
+  { name: "نص هادئ", hex: "#725C67", css: "--text-muted", text: "--surface-raised" },
+  { name: "حدود", hex: "#F0C9DA", css: "--border-subtle", text: "--text-primary" },
   { name: "نجاح", hex: "#346B57", css: "--status-success", text: "--surface-raised" },
   { name: "تنبيه", hex: "#74530C", css: "--status-warning", text: "--surface-raised" },
   { name: "خطأ", hex: "#963B42", css: "--status-error", text: "--surface-raised" },
-  { name: "معلومة", hex: "#24627A", css: "--status-info", text: "--surface-raised" },
+  { name: "معلومة", hex: "#C43C78", css: "--status-info", text: "--surface-raised" },
 ];
 
 export default async function DesignSystemPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -73,7 +73,7 @@ export default async function DesignSystemPage({ params }: { params: Promise<{ l
             <div className="ui-demo__grid ui-demo__grid--two">
               <div className="ui-demo__logo">
                 <Image
-                  src="/brand/shimo-logo.png"
+                  src="/brand/shimo-logo-transparent.png"
                   alt="شعار Shimo Gift"
                   width={320}
                   height={320}

@@ -42,11 +42,24 @@ function publicHttpsUrl(value: string | null | undefined): string | null {
   }
 }
 
+function publicStoreName(value: string | null | undefined): string {
+  const name = value?.trim();
+  if (!name || /^(?:Shimo Gift|Shimo Fashion|organza fashion)$/i.test(name)) return siteConfig.name;
+  return name;
+}
+
+export function brandedText(value: string | null | undefined): string | null {
+  const text = value?.trim();
+  if (!text) return null;
+  const branded = text.replace(/(?:Shimo Gift|Shimo Fashion|organza fashion)/gi, siteConfig.name);
+  return /gift|هدايا|هدية|تغليف/i.test(branded) ? null : branded;
+}
+
 export const getPublicSiteData = cache(async (): Promise<PublicSiteData> => {
   const defaults: PublicSiteData = {
     name: siteConfig.name,
     storeName: siteConfig.name,
-    description: "متجر Shimo Gift للهدايا والمنتجات المختارة.",
+    description: "Shimo Gift للهدايا ومستحضرات التجميل ومنتجات العناية بالبشرة، لاختيارات جميلة لكِ ولمن تحبين.",
     storeDescription: null,
     ogImage: null,
     email: null,
@@ -57,14 +70,14 @@ export const getPublicSiteData = cache(async (): Promise<PublicSiteData> => {
   };
   try {
     const [settings, seo] = await Promise.all([
-      prisma.storeSettings.findUnique({ where: { id: "singleton" }, select: { description: true, email: true, contactPhone: true, address: true, isActive: true } }),
+      prisma.storeSettings.findUnique({ where: { id: "singleton" }, select: { storeName: true, description: true, email: true, contactPhone: true, address: true, isActive: true } }),
       prisma.storeSeoSettings.findUnique({ where: { locale: "AR" }, select: { description: true, defaultOgImageUrl: true } }),
     ]);
     return {
       name: siteConfig.name,
-      storeName: siteConfig.name,
-      description: seo?.description?.trim() || settings?.description?.trim() || defaults.description,
-      storeDescription: settings?.description?.trim() || null,
+      storeName: publicStoreName(settings?.storeName),
+      description: brandedText(seo?.description) || brandedText(settings?.description) || defaults.description,
+      storeDescription: brandedText(settings?.description),
       ogImage: publicHttpsUrl(seo?.defaultOgImageUrl),
       email: settings?.email?.trim() || null,
       phone: settings?.contactPhone?.trim() || null,

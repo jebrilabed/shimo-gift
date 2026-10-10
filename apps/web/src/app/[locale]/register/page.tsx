@@ -17,7 +17,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
         <Card className="auth-page__card mx-auto flex w-full max-w-md flex-col gap-6 p-6 sm:p-8">
           <div>
             <p className="auth-page__brand">
-              <span className="auth-page__mark"><Image alt="" height={48} src="/brand/shimo-logo.png" width={48} /></span>
+              <span className="auth-page__mark"><Image alt="" height={48} src="/brand/shimo-logo-transparent.png" width={48} /></span>
               {storefrontMessages.ar.brand}
             </p>
             <h1 className="text-2xl font-semibold">{messages.ar.registerTitle}</h1>

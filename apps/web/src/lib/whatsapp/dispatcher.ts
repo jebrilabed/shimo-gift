@@ -92,9 +92,9 @@ export async function retryFailedWhatsAppNotification(id: string, actorUserId: s
   return prisma.$transaction(async (tx) => {
     const existing = await tx.notificationOutbox.findUnique({
       where: { id },
-      select: { id: true, eventType: true, status: true, retryCount: true, deliveryUnknown: true },
+      select: { id: true, orderId: true, eventType: true, status: true, retryCount: true, deliveryUnknown: true },
     });
-    if (!existing || existing.status !== NotificationStatus.FAILED) return { ok: false as const, reason: "not-retryable" as const };
+    if (!existing || !existing.orderId || existing.status !== NotificationStatus.FAILED) return { ok: false as const, reason: "not-retryable" as const };
     const changed = await tx.notificationOutbox.updateMany({
       where: { id, status: NotificationStatus.FAILED },
       data: { status: NotificationStatus.PENDING, retryCount: 0, nextAttemptAt: new Date(), errorMessage: null, deliveryUnknown: false },

@@ -64,17 +64,18 @@ export default async function InventoryPage({ searchParams }: InventoryPageProps
       <button className="ui-button ui-button--outline" type="submit">{messages.ar.applyFilter}</button>
     </form></Card>
     {skus.length ? <>
-      <div className="ui-table-wrap"><table className="ui-table">
-        <thead><tr><th>{messages.ar.primaryImage}</th><th>{messages.ar.price}</th><th>{messages.ar.stock}</th><th>{messages.ar.status}</th><th>{messages.ar.updateStock}</th></tr></thead>
+      <div className="ui-table-wrap admin-inventory-table-wrap"><table className="ui-table admin-inventory-table">
+        <thead><tr><th>{messages.ar.primaryImage}</th><th>{messages.ar.productName}</th><th>{messages.ar.price}</th><th>{messages.ar.stock}</th><th>{messages.ar.status}</th><th>{messages.ar.updateStock}</th></tr></thead>
         <tbody>{skus.map((sku) => {
           const product = sku.product;
           const name = product.translations[0]?.name ?? product.slug;
           const stockLabel = sku.stockQuantity === 0 ? messages.ar.outOfStock : sku.stockQuantity < threshold ? messages.ar.lowStock : messages.ar.inStock;
           const variant = sku.stockQuantity === 0 ? "error" : sku.stockQuantity < threshold ? "warning" : "success";
           return <tr key={sku.id}>
-            <td><div className="admin-product-cell"><span className="admin-product-thumb">{product.images[0]?.url ? <AdminProductThumbnail src={product.images[0].url} alt={product.images[0].altText ?? messages.ar.imageAlt} width={52} height={52} /> : messages.ar.noImage}</span><span className="admin-product-name"><Link href={`/admin/products/${product.id}`}>{name}</Link>{displayVariantOptions(sku.variantOptions) && <small>{displayVariantOptions(sku.variantOptions)}</small>}</span></div></td>
-            <td>{currency ? formatMoney(sku.price, currency) : "—"}</td><td>{sku.stockQuantity}</td><td><Badge variant={variant}>{stockLabel}</Badge></td>
-            <td><InventoryQuantityForm skuId={sku.id} productId={product.id} quantity={sku.stockQuantity} /></td>
+            <td className="admin-product-image-cell" data-label={messages.ar.primaryImage}><span className="admin-product-thumb">{product.images[0]?.url ? <AdminProductThumbnail src={product.images[0].url} alt={product.images[0].altText ?? messages.ar.imageAlt} width={52} height={52} /> : messages.ar.noImage}</span></td>
+            <td data-label={messages.ar.productName}><span className="admin-product-name"><Link href={`/admin/products/${product.id}`}>{name}</Link>{displayVariantOptions(sku.variantOptions) && <small>{displayVariantOptions(sku.variantOptions)}</small>}</span></td>
+            <td data-label={messages.ar.price}>{currency ? formatMoney(sku.price, currency) : "—"}</td><td data-label={messages.ar.stock}>{sku.stockQuantity}</td><td data-label={messages.ar.status}><Badge variant={variant}>{stockLabel}</Badge></td>
+            <td data-label={messages.ar.updateStock}><InventoryQuantityForm skuId={sku.id} productId={product.id} quantity={sku.stockQuantity} /></td>
           </tr>;
         })}</tbody>
       </table></div>

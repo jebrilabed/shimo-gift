@@ -3,8 +3,11 @@ import Link from "next/link";
 import { requireAdminPage } from "@/lib/auth/authorization";
 import { Badge, Card, Container, Select } from "@/components/ui";
 import { StorefrontSubmitButton } from "@/components/storefront/submit-button";
+import { DeleteOrderForm } from "@/components/admin/delete-order-form";
+import { ToastMessage } from "@/components/ui/toast";
 import { OrderStatus, PaymentStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/db/prisma";
+import { adminMessages } from "@/lib/admin/messages";
 import { allowedOrderTransitions } from "@/lib/storefront/order-workflow.mjs";
 import { addressParts, formatMoney } from "@/lib/storefront/format";
 import { orderStatusLabel, paymentStatusLabel } from "@/lib/storefront/order-labels";
@@ -40,12 +43,13 @@ export default async function AdminOrderDetails({ params, searchParams }: {
   if (!order) notFound();
   const address = addressParts(order.shippingAddress);
   const availableTransitions = allowedOrderTransitions(order.status);
+  const adminText = adminMessages.ar;
 
   return (
     <Container className="admin-content">
-      <header className="admin-page-header"><div><p className="admin-eyebrow">{messages.ar.adminOrders}</p><h1 dir="ltr">{order.orderNumber}</h1><p><Badge>{orderStatusLabel(order.status)}</Badge></p></div><Link href="/admin/orders">{messages.ar.backToAdminOrders}</Link></header>
-      {(notice === "updated" || notice === "paymentUpdated") && <p className="admin-feedback admin-feedback--success" role="status">{notice === "updated" ? messages.ar.statusUpdated : messages.ar.paymentStatusUpdated}</p>}
-      {notice && notice !== "updated" && notice !== "paymentUpdated" && <p className="admin-feedback admin-feedback--error" role="alert">{notice === "transition" ? messages.ar.invalidTransition : notice === "missingSku" ? messages.ar.missingSkuRestore : notice === "alreadyCancelled" ? messages.ar.alreadyCancelled : notice === "restockUnavailable" ? messages.ar.restockUnavailable : notice === "paymentInvalid" ? messages.ar.paymentStatusInvalid : notice === "paymentUpdateFailed" ? messages.ar.paymentStatusUpdateFailed : notice === "notFound" ? messages.ar.orderNotFound : messages.ar.databaseUnavailable}</p>}
+      <header className="admin-page-header"><div><p className="admin-eyebrow">{messages.ar.adminOrders}</p><h1 dir="ltr">{order.orderNumber}</h1><p><Badge>{orderStatusLabel(order.status)}</Badge></p></div><div className="admin-order-header-actions"><DeleteOrderForm orderId={order.id} label={adminText.deleteOrder} confirmMessage={adminText.deleteOrderConfirm} /><Link href="/admin/orders">{messages.ar.backToAdminOrders}</Link></div></header>
+      <ToastMessage message={notice === "updated" ? messages.ar.statusUpdated : notice === "paymentUpdated" ? messages.ar.paymentStatusUpdated : undefined} tone="success" />
+      <ToastMessage message={notice === "transition" ? messages.ar.invalidTransition : notice === "missingSku" ? messages.ar.missingSkuRestore : notice === "alreadyCancelled" ? messages.ar.alreadyCancelled : notice === "restockUnavailable" ? messages.ar.restockUnavailable : notice === "paymentInvalid" ? messages.ar.paymentStatusInvalid : notice === "paymentUpdateFailed" ? messages.ar.paymentStatusUpdateFailed : notice === "deleteMissingSku" ? adminText.orderDeleteMissingSku : notice === "deleteRestockUnavailable" ? adminText.orderDeleteRestockUnavailable : notice === "deleteNotificationProcessing" ? adminText.orderDeleteNotificationProcessing : notice === "deleteFailed" ? adminText.orderDeleteFailed : notice === "notFound" ? messages.ar.orderNotFound : notice && notice !== "updated" && notice !== "paymentUpdated" ? messages.ar.databaseUnavailable : undefined} tone="error" />
       <div className="store-admin-order-info">
         <Card><h2>{messages.ar.customer}</h2><p>{order.contactName}</p><p dir="ltr">{order.contactPhone}</p>{order.contactEmail && <p dir="ltr">{order.contactEmail}</p>}</Card>
         <Card><h2>{messages.ar.addressInfo}</h2><p>{address.address}</p><p>{address.city}</p></Card>

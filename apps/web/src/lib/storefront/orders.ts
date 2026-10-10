@@ -23,7 +23,23 @@ export async function getStoreCurrency() {
 }
 
 function newOrderNumber() {
-  return `FAR-${randomBytes(16).toString("hex").toUpperCase()}`;
+  const alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+  const bytes = randomBytes(8);
+  let buffer = 0;
+  let bitCount = 0;
+  let code = "";
+
+  for (const byte of bytes) {
+    buffer = (buffer << 8) | byte;
+    bitCount += 8;
+    while (bitCount >= 5) {
+      bitCount -= 5;
+      code += alphabet[(buffer >> bitCount) & 31];
+    }
+    buffer &= (1 << bitCount) - 1;
+  }
+  if (bitCount > 0) code += alphabet[(buffer << (5 - bitCount)) & 31];
+  return `OF-${code}`;
 }
 
 export async function createOrderFromCart({

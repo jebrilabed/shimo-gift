@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Button, Container, Input, Select } from "@/components/ui";
 import { ProductCard } from "@/components/storefront/product-card";
@@ -79,23 +79,31 @@ export default async function StorefrontHome({ params, searchParams, categoryTra
         translations: { where: { locale: Locale.AR }, take: 1, select: { name: true, slug: true } },
         images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true, altText: true } },
         category: { select: { translations: { where: { locale: Locale.AR }, take: 1, select: { name: true } } } },
-        skus: { where: { isActive: true }, select: { price: true, stockQuantity: true, variantOptions: true } },
+        skus: { where: { isActive: true }, select: { id: true, price: true, stockQuantity: true, variantOptions: true } },
       },
     }),
     prisma.product.count({ where }),
     prisma.category.findMany({
       where: { status: "ACTIVE", translations: { some: { locale: Locale.AR } } },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-      select: { translations: { where: { locale: Locale.AR }, take: 1, select: { name: true, slug: true } } },
+      select: {
+        translations: { where: { locale: Locale.AR }, take: 1, select: { name: true, slug: true } },
+        products: {
+          where: { status: ProductStatus.ACTIVE },
+          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+          take: 1,
+          select: { translations: { where: { locale: Locale.AR }, take: 1, select: { name: true } }, images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true, altText: true } } },
+        },
+      },
     }),
     getPublicSiteData(),
   ]);
   const currency = storeData.currency;
   const pages = Math.max(1, Math.ceil(total / STOREFRONT_PAGE_SIZE));
   const heroProduct = products.find((product) => product.featured && product.images[0]) ?? products.find((product) => product.images[0]) ?? null;
-  const heroTranslation = heroProduct?.translations[0];
-  const heroImage = heroProduct?.images[0];
-  const heroSku = heroProduct?.skus.find((sku) => sku.stockQuantity > 0) ?? heroProduct?.skus[0];
+  const editorialProduct = products.find((product) => product.slug !== heroProduct?.slug && product.images[0]) ?? null;
+  const editorialTranslation = editorialProduct?.translations[0];
+  const editorialImage = editorialProduct?.images[0];
   const isHomeView = showHomeHero && !query && !categorySlug && page === 1 && categoryTrail.length === 0;
   const previousHref = `/ar?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(categorySlug ? { category: categorySlug } : {}), page: String(page - 1) }).toString()}`;
   const nextHref = `/ar?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(categorySlug ? { category: categorySlug } : {}), page: String(page + 1) }).toString()}`;
@@ -118,43 +126,25 @@ export default async function StorefrontHome({ params, searchParams, categoryTra
               <div className="store-home__hero-copy">
                 <span className="store-home__eyebrow">
                   <span className="store-home__eyebrow-dot" />
-                  {storeData.storeName || messages.ar.brand} — عالم الهدايا الفاخرة
+                  {messages.ar.brand} — هدايا وكوزمتكس وعناية بالبشرة
                 </span>
                 <h1 id="store-home-title">
-                  هدايا تُلامس القلب<br />وتصنع أجمل الذكريات
+                  هدايا تفرح القلب<br />وعناية تليق بكِ
                 </h1>
                 <p>
-                  {storeData.storeDescription || "اكتشفوا تشكيلة Shimo Gift الحصرية المصممة بأناقة وتغليف مميز ليناسب جميع مناسباتكم وتطلعاتكم."}
+                  {storeData.storeDescription || "اكتشفي الهدايا ومستحضرات التجميل ومنتجات العناية بالبشرة، واختاري ما يسعدكِ أو يعبّر عن محبتكِ."}
                 </p>
                 <div className="store-home__hero-actions">
                   <Link className="ui-button ui-button--primary ui-button--large" href="/ar/products">
-                    استكشف التشكيلة
+                    تسوّقي الآن
                   </Link>
-                  {heroTranslation && (
-                    <Link className="store-home__hero-secondary" href={`/ar/products/${encodeURIComponent(heroTranslation.slug)}`}>
-                      شاهدي قطعة مميزة
-                    </Link>
-                  )}
                 </div>
               </div>
-              <div className="store-home__hero-visual" aria-hidden={!heroImage}>
+              <div className="store-home__hero-visual">
                 <span className="store-home__hero-orbit" />
-                {heroImage && heroTranslation ? (
-                  <>
-                    <Link aria-label={heroTranslation.name} className="store-home__hero-image" href={`/ar/products/${encodeURIComponent(heroTranslation.slug)}`}>
-                      <SafeProductImage alt={heroImage.altText || heroTranslation.name} priority sizes="(max-width: 640px) 75vw, (max-width: 960px) 40vw, 35vw" src={heroImage.url} />
-                    </Link>
-                    <Link className="store-home__hero-note" href={`/ar/products/${encodeURIComponent(heroTranslation.slug)}`}>
-                      <span>{heroProduct?.category?.translations[0]?.name || messages.ar.products}</span>
-                      <strong>{heroTranslation.name}</strong>
-                      {heroSku && currency && <b>{messages.ar.startingAt} {formatMoney(heroSku.price, currency)}</b>}
-                    </Link>
-                  </>
-                ) : (
-                  <span className="store-home__hero-placeholder">
-                    <Image alt="" height={512} src="/brand/shimo-logo.png" width={512} />
-                  </span>
-                )}
+                <div className="store-home__hero-brand">
+                  <Image alt={storeData.storeName || messages.ar.brand} className="store-home__hero-logo" height={640} priority src="/brand/shimo-logo-transparent.png" width={640} />
+                </div>
               </div>
             </section>
 
@@ -162,38 +152,38 @@ export default async function StorefrontHome({ params, searchParams, categoryTra
             <section aria-label="مميزات المتجر" className="store-features">
               <div className="store-features__grid">
                 <div className="store-feature-card">
-                  <span className="store-feature-card__icon">🎁</span>
+                  <span aria-hidden="true" className="store-feature-card__icon">✧</span>
                   <div>
-                    <h3>تغليف هدايا فاخر</h3>
-                    <p>لمسات أنيقة تجعل فتح الهدية لحظة لا تُنسى</p>
+                    <h3>هدايا بمعنى</h3>
+                    <p>اختيارات جميلة للمناسبات واللحظات الخاصة</p>
                   </div>
                 </div>
                 <div className="store-feature-card">
-                  <span className="store-feature-card__icon">✨</span>
+                  <span aria-hidden="true" className="store-feature-card__icon">◇</span>
                   <div>
-                    <h3>جودة واستثناء</h3>
-                    <p>منتجات مختارة بعناية فائقة لتناسب أذواقكم</p>
+                    <h3>جمال وكوزمتكس</h3>
+                    <p>مستحضرات تجميل تضيف لمستكِ الخاصة</p>
                   </div>
                 </div>
                 <div className="store-feature-card">
-                  <span className="store-feature-card__icon">🚚</span>
+                  <span aria-hidden="true" className="store-feature-card__icon">↗</span>
                   <div>
-                    <h3>توصيل سريع</h3>
-                    <p>وصول آمن وسريع لجميع هداياكم حتى الباب</p>
+                    <h3>عناية بالبشرة</h3>
+                    <p>منتجات تضيف إلى روتين عنايتكِ اليومي</p>
                   </div>
                 </div>
                 <div className="store-feature-card">
-                  <span className="store-feature-card__icon">💖</span>
+                  <span aria-hidden="true" className="store-feature-card__icon">✦</span>
                   <div>
-                    <h3>خدمة عملاء متميزة</h3>
-                    <p>فريقنا جاهز دائماً لمساعدتكم واختيار الأنسب</p>
+                    <h3>لكل مناسبة</h3>
+                    <p>أفكار هدايا ولمسات جمال لكل يوم</p>
                   </div>
                 </div>
               </div>
             </section>
           </>
         ) : (
-          <header className="store-page-heading">
+          <header className="store-page-heading store-page-heading--catalogue">
             <p className="store-muted">{storeData.storeName || messages.ar.brand}</p>
             <h1>{categoryTrail.at(-1)?.name || messages.ar.products}</h1>
             {categoryTrail.length ? (categoryTrail.at(-1)?.description && <p className="store-muted">{categoryTrail.at(-1)?.description}</p>) : storeData.storeDescription && <p className="store-muted">{storeData.storeDescription}</p>}
@@ -204,12 +194,32 @@ export default async function StorefrontHome({ params, searchParams, categoryTra
         {isHomeView && categories.length > 0 && <section aria-label={messages.ar.category} className="store-home__section">
           <div className="store-home__section-heading"><h2>تصفحي حسب التصنيف</h2></div>
           <nav className="store-home__category-list">
-            {categories.flatMap((category) => category.translations.map((translation) => <Link href={`/ar/categories/${encodeURIComponent(translation.slug)}`} key={translation.slug}>{translation.name}</Link>))}
+            {categories.flatMap((category) => category.translations.map((translation) => {
+              const categoryProduct = category.products[0];
+              const image = categoryProduct?.images[0];
+              return <Link href={`/ar/categories/${encodeURIComponent(translation.slug)}`} key={translation.slug}>
+                <span className="store-home__category-image">
+                  {image ? <SafeProductImage alt={image.altText || categoryProduct?.translations[0]?.name || translation.name} sizes="(max-width: 640px) 50vw, 23vw" src={image.url} /> : <span aria-hidden="true">✦</span>}
+                </span>
+                <span className="store-home__category-name">{translation.name}</span>
+              </Link>;
+            }))}
           </nav>
+        </section>}
+        {isHomeView && editorialProduct && editorialTranslation && editorialImage && <section aria-label="من روح Shimo Gift" className="store-home__editorial">
+          <Link aria-label={editorialTranslation.name} className="store-home__editorial-image" href={`/ar/products/${encodeURIComponent(editorialTranslation.slug)}`}>
+            <SafeProductImage alt={editorialImage.altText || editorialTranslation.name} sizes="(max-width: 700px) 100vw, 32vw" src={editorialImage.url} />
+          </Link>
+          <div className="store-home__editorial-copy">
+            <p>من Shimo Gift</p>
+            <h2>هدية تفرحكِ، وعناية تليق بكِ</h2>
+            <span>من أفكار الهدايا إلى مستحضرات التجميل والعناية بالبشرة، اختاري ما يناسبكِ ويناسب من تحبين.</span>
+            <Link href={`/ar/products/${encodeURIComponent(editorialTranslation.slug)}`}>اكتشفي المنتج <span aria-hidden="true">←</span></Link>
+          </div>
         </section>}
         <section className={isHomeView ? "store-home__section store-home__catalogue" : "store-catalogue"}>
         <div className="store-home__section-heading">
-          <div><h2>{isHomeView ? "أحدث الهدايا والمنتجات" : messages.ar.products}</h2><p>{total} منتج متوفر</p></div>
+          <div><h2>{isHomeView ? "أحدث اختياراتنا" : messages.ar.products}</h2><p>{total} منتج متاح</p></div>
           {isHomeView && <Link className="store-home__all-link" href="/ar/products">عرض كل المنتجات</Link>}
         </div>
         <div className="store-filter-responsive">

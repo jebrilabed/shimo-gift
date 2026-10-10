@@ -24,7 +24,7 @@ export function StoreAssistantLauncher({ locale = "ar" }: { locale?: "ar" | "en"
       <StoreAssistantPanel locale={locale} hidden={!open} onClose={() => setOpen(false)} onThreadsAvailable={setHasThreads} />
     </Suspense>}
     <button className="store-assistant__launcher" type="button" aria-expanded={open} onClick={toggle}>
-      <span aria-hidden="true">✦</span>{open ? (isArabic ? "إغلاق المساعد" : "Close assistant") : (isArabic ? "اسألي شيمو" : "Ask Shimo")}
+      <span aria-hidden="true">✦</span>{open ? (isArabic ? "إغلاق المساعد" : "Close assistant") : (isArabic ? "مساعدة Shimo Gift" : "Ask Shimo Gift")}
       {hasThreads && <span className="store-assistant__thread-count" aria-label={isArabic ? "لديك محادثة سابقة" : "Previous conversations available"} />}
     </button>
   </div>;

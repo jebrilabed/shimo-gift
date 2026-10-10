@@ -9,7 +9,7 @@ export const AI_TOOL_NAMES = Object.freeze([
 ]);
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const orderNumberPattern = /^FAR-[A-F0-9]{32}$/i;
+const orderNumberPattern = /^(?:FAR-[A-F0-9]{32}|OF-[0-9A-HJKMNP-TV-Z]{13})$/i;
 
 function hasOnlyKeys(value, keys) {
   return Object.keys(value).every((key) => keys.includes(key));

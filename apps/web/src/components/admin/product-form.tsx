@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, Input, Select, Textarea } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { adminMessages as messages } from "@/lib/admin/messages";
 import type { AdminActionState } from "@/lib/admin/config";
 import { saveProduct } from "@/app/(admin)/admin/actions";
@@ -104,9 +105,9 @@ export function ProductForm({
           <input type="checkbox" name="isActive" checked={formValues.isActive} onChange={(event) => setFormValues((current) => ({ ...current, isActive: event.target.checked }))} />
           <span>{messages.ar.activeStatus}</span>
         </label>
-        {state.error && <p className="admin-feedback admin-feedback--error" role="alert">{state.error}</p>}
-        {state.success && <p className="admin-feedback admin-feedback--success" role="status">{state.success}</p>}
-        {state.fieldErrors && <p className="admin-feedback admin-feedback--error" role="alert">{messages.ar.genericError}</p>}
+        <ToastMessage eventKey={state} message={state.error} tone="error" />
+        <ToastMessage eventKey={state} message={state.success} tone="success" />
+        <ToastMessage eventKey={state} message={state.fieldErrors ? messages.ar.genericError : undefined} tone="warning" />
         <div className="admin-page__actions"><SubmitButton disabled={uploading}>{messages.ar.save}</SubmitButton><Link className="ui-button ui-button--ghost" href="/admin/products">{messages.ar.cancel}</Link></div>
       </form>
     </Card>

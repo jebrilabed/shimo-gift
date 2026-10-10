@@ -3,6 +3,7 @@ import { useActionState, useState } from "react";
 import Image from "next/image";
 import { cloudinaryImageUrl } from "@/lib/seo/cloudinary-image.mjs";
 import { Button, Card } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { deleteImage, makePrimaryImage, moveImage, saveImage, type ManagementState } from "@/app/(admin)/admin/products/[id]/management-actions";
 import { adminMessages } from "@/lib/admin/messages";
 import { phase7Messages as messages } from "@/lib/phase7/messages";
@@ -26,9 +27,9 @@ function ImageEditor({ productId, image, canAddImage }: { productId: string; ima
     <ProductImageUploader maxFiles={image ? 1 : canAddImage ? 1 : 0} onUploaded={setUploadedImage} onUploadingChange={setUploading} />
     {uploadedImage && <div className="admin-product-image-preview"><Image alt={uploadedImage.fileName} height={72} loader={productImageLoader} src={uploadedImage.url} width={72} /><span>{uploadedImage.fileName}</span></div>}
     <div className="flex flex-wrap items-center gap-2">
-      {state.error && <p role="alert" className="admin-feedback admin-feedback--error">{state.error}</p>}
-      {state.success && <p role="status" className="admin-feedback admin-feedback--success">{state.success}</p>}
-      <Button disabled={uploading || !currentUrl} loading={pending}>{image ? messages.ar.saveImage : messages.ar.addImage}</Button>
+      <ToastMessage eventKey={state} message={state.error} tone="error" />
+      <ToastMessage eventKey={state} message={state.success} tone="success" />
+      <Button type="submit" disabled={uploading || !currentUrl} loading={pending}>{image ? messages.ar.saveImage : messages.ar.addImage}</Button>
     </div>
   </form>;
 }
@@ -38,11 +39,11 @@ function ImageControls({ productId, imageId, index, count }: { productId: string
   const [deleteState, deleteAction, deletePending] = useActionState(deleteImage, {} as ManagementState);
   const hidden = <><input type="hidden" name="productId" value={productId} /><input type="hidden" name="imageId" value={imageId} /></>;
   return <div className="grid gap-2"><div className="flex flex-wrap gap-2">
-    {index > 0 && <form action={moveAction}>{hidden}<input type="hidden" name="direction" value="up" /><Button size="small" variant="outline" loading={movePending}>{messages.ar.moveUp}</Button></form>}
-    {index < count - 1 && <form action={moveAction}>{hidden}<input type="hidden" name="direction" value="down" /><Button size="small" variant="outline" loading={movePending}>{messages.ar.moveDown}</Button></form>}
-    <form action={primaryAction}>{hidden}<Button size="small" variant="outline" loading={primaryPending}>{messages.ar.setPrimary}</Button></form>
-    <form action={deleteAction}>{hidden}<Button size="small" variant="ghost" loading={deletePending}>{messages.ar.delete}</Button></form>
-  </div>{moveState.error && <p role="alert">{moveState.error}</p>}{moveState.success && <p role="status">{moveState.success}</p>}{primaryState.error && <p role="alert">{primaryState.error}</p>}{primaryState.success && <p role="status">{primaryState.success}</p>}{deleteState.error && <p role="alert">{deleteState.error}</p>}{deleteState.success && <p role="status">{deleteState.success}</p>}</div>;
+    {index > 0 && <form action={moveAction}>{hidden}<input type="hidden" name="direction" value="up" /><Button type="submit" size="small" variant="outline" loading={movePending}>{messages.ar.moveUp}</Button></form>}
+    {index < count - 1 && <form action={moveAction}>{hidden}<input type="hidden" name="direction" value="down" /><Button type="submit" size="small" variant="outline" loading={movePending}>{messages.ar.moveDown}</Button></form>}
+    <form action={primaryAction}>{hidden}<Button type="submit" size="small" variant="outline" loading={primaryPending}>{messages.ar.setPrimary}</Button></form>
+    <form action={deleteAction}>{hidden}<Button type="submit" size="small" variant="ghost" loading={deletePending}>{messages.ar.delete}</Button></form>
+  </div><ToastMessage eventKey={moveState} message={moveState.error} tone="error" /><ToastMessage eventKey={moveState} message={moveState.success} tone="success" /><ToastMessage eventKey={primaryState} message={primaryState.error} tone="error" /><ToastMessage eventKey={primaryState} message={primaryState.success} tone="success" /><ToastMessage eventKey={deleteState} message={deleteState.error} tone="error" /><ToastMessage eventKey={deleteState} message={deleteState.success} tone="success" /></div>;
 }
 export function ProductManagement({ productId, images = [] }: { productId: string; images?: ProductImage[] }) {
   return <div className="mt-8 grid gap-6">

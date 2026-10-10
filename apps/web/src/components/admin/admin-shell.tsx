@@ -11,7 +11,7 @@ export function AdminShell({ children, email }: { children: React.ReactNode; ema
       <aside className="admin-sidebar" aria-label={messages.ar.admin}>
         <Link className="admin-brand" href="/admin" aria-label={messages.ar.admin}>
           <span className="admin-brand__mark">
-            <Image alt="" height={48} src="/brand/shimo-logo.png" width={48} />
+            <Image alt="" height={48} src="/brand/shimo-logo-transparent.png" width={48} />
           </span>
           <span><strong>{messages.ar.brand}</strong><small>{messages.ar.admin}</small></span>
         </Link>
@@ -28,7 +28,7 @@ export function AdminShell({ children, email }: { children: React.ReactNode; ema
         <header className="admin-mobile-header">
           <Link href="/admin" className="admin-brand admin-brand--compact">
             <span className="admin-brand__mark">
-              <Image alt="" height={48} src="/brand/shimo-logo.png" width={48} />
+              <Image alt="" height={48} src="/brand/shimo-logo-transparent.png" width={48} />
             </span>
             <strong>{messages.ar.brand}</strong>
           </Link>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { NotificationStatus } from "@/generated/prisma/enums";
 import { Badge, Button, Container, Select } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { adminMessages as messages } from "@/lib/admin/messages";
 import { requireAdminPage } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
@@ -65,7 +66,7 @@ export default async function AdminNotificationsPage({ searchParams }: { searchP
 
   return <Container className="admin-content">
     <header className="admin-page-header"><div><p className="admin-eyebrow">{messages.ar.admin}</p><h1>{messages.ar.notificationOutboxTitle}</h1><p>{messages.ar.notificationOutboxDescription}</p></div></header>
-    {notice && notices[notice] && <p className={`store-alert ${notice === "retried" ? "store-alert--success" : "store-alert--error"}`} role={notice === "retried" ? "status" : "alert"}>{notices[notice]}</p>}
+    <ToastMessage message={notice ? notices[notice] : undefined} tone={notice === "retried" ? "success" : "error"} />
     <form className="store-filter-row" method="get">
       <Select label={messages.ar.notificationStatus} name="status" defaultValue={status}>
         <option value="">{messages.ar.notificationAllStatuses}</option>

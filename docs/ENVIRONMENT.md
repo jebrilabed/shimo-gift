@@ -1,3 +1,4 @@
+Shimo Gift; `SITE_URL` sets its canonical origin. The AI service uses `AI_ENVIRONMENT`,
 # Environment configuration
 
 Use separate local environment files for each application. Copy the examples and keep
@@ -11,7 +12,7 @@ in `.env.local`; do not copy a sample password or authentication secret into a r
 environment.
 
 The web and AI health/foundation routes need no secrets. The web site name is
-Shimo Gift; `SITE_URL` sets its canonical origin. The AI service uses `AI_ENVIRONMENT`,
+Shimo Fashion; `SITE_URL` sets its canonical origin. The AI service uses `AI_ENVIRONMENT`,
 `AI_SERVICE_NAME`, `AI_HOST`, `AI_PORT`, and `AI_CORS_ORIGINS`.
 
 Integration values are listed as blank placeholders in the examples. WhatsApp

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/authorization";
 import { AdminShell } from "@/components/admin/admin-shell";
+import { ToastProvider } from "@/components/ui/toast";
 import "../globals.css";
 import "./admin.css";
 
@@ -16,7 +17,7 @@ export default async function ProtectedAdminRoot({ children }: { children: React
 
   return (
     <html lang="ar" dir="rtl" data-scroll-behavior="smooth">
-      <body><AdminShell email={user.email}>{children}</AdminShell></body>
+      <body><ToastProvider><AdminShell email={user.email}>{children}</AdminShell></ToastProvider></body>
     </html>
   );
 }

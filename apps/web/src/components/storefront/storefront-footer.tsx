@@ -19,12 +19,12 @@ export async function StorefrontFooter() {
         <div className="store-footer__brand">
           <Link href="/ar" className="store-footer__brand-link">
             <span className="store-footer__logo-mark">
-              <Image alt="" height={48} src="/brand/shimo-logo.png" width={48} />
+              <Image alt="" height={48} src="/brand/shimo-logo-transparent.png" width={48} />
             </span>
             <span className="store-footer__wordmark">{storeData.storeName || messages.ar.brand}</span>
           </Link>
           <p className="store-footer__desc">
-            {storeData.storeDescription || "عالم من الهدايا المميزة والفاخرة المصممة بحب لتصنع أجمل الذكريات."}
+            {storeData.storeDescription || "دار أزياء تجمع بين الحرفية الرفيعة والتصميم المعاصر في قطع أنيقة لكل مناسبة."}
           </p>
           {hasContactDetails && (
             <div className="store-footer__contact">

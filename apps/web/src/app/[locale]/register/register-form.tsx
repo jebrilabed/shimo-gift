@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { Button, Input } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { registerCustomer } from "./actions";
 import { phase7Messages as messages } from "@/lib/phase7/messages";
 
@@ -15,7 +16,7 @@ export function RegisterForm() {
     <Input autoComplete="email" dir="ltr" label={messages.ar.registerEmail} type="email" name="email" required maxLength={254} error={fieldError("email")} />
     <Input autoComplete="new-password" label={messages.ar.registerPassword} type="password" name="password" required minLength={8} maxLength={128} error={fieldError("password")} />
     <Input autoComplete="new-password" label={messages.ar.registerConfirm} type="password" name="confirmation" required minLength={8} maxLength={128} error={fieldError("confirmation")} />
-    {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
+    <ToastMessage eventKey={state} message={state.error} tone="error" />
     <Button loading={pending} type="submit">{messages.ar.createAccount}</Button>
     <p className="text-sm">{messages.ar.hasAccount} <Link href="/ar/login" className="underline">{messages.ar.login}</Link></p>
   </form>;

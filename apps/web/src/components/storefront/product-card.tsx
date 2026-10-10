@@ -4,6 +4,9 @@ import { Prisma } from "@/generated/prisma/client";
 import { Badge, Card } from "@/components/ui";
 import { formatMoney } from "@/lib/storefront/format";
 import { storefrontMessages as messages } from "@/lib/storefront/messages";
+import { addToCartAction } from "@/app/[locale]/(store)/actions";
+import { StorefrontSubmitButton } from "@/components/storefront/submit-button";
+import { FavoriteButton } from "@/components/storefront/favorite-button";
 
 type ProductCardProps = {
   product: {
@@ -11,7 +14,7 @@ type ProductCardProps = {
     translations: { name: string; slug: string }[];
     images: { url: string; altText: string | null }[];
     category: { translations: { name: string }[] } | null;
-    skus: { price: { toString(): string }; stockQuantity: number; variantOptions: unknown }[];
+    skus: { id: string; price: { toString(): string }; stockQuantity: number; variantOptions: unknown }[];
   };
   currency: string | null;
 };
@@ -25,19 +28,25 @@ export function ProductCard({ product, currency }: ProductCardProps) {
   }, null)?.toFixed(2) ?? null;
   const stock = product.skus.reduce((sum, sku) => sum + sku.stockQuantity, 0);
   const image = product.images[0];
+  const quickAddSku = product.skus.length === 1 && product.skus[0].stockQuantity > 0 ? product.skus[0] : null;
 
   return (
     <Card className="store-product-card">
-      <Link className="store-product-card__image" href={`/ar/products/${encodeURIComponent(translation.slug)}`} aria-label={translation.name}>
-        {image ? (
-          <SafeProductImage alt={image.altText || translation.name} sizes="(max-width: 640px) 50vw, (max-width: 1000px) 33vw, 25vw" src={image.url} />
-        ) : (
-          <span className="store-product-card__no-image">{messages.ar.noImage}</span>
-        )}
+      <div className="store-product-card__image">
+        <Link className="store-product-card__image-link" href={`/ar/products/${encodeURIComponent(translation.slug)}`} aria-label={translation.name}>
+          <span className="store-product-card__image-media">
+            {image ? (
+              <SafeProductImage alt={image.altText || translation.name} sizes="(max-width: 640px) 50vw, (max-width: 1000px) 33vw, 25vw" src={image.url} />
+            ) : (
+              <span className="store-product-card__no-image">{messages.ar.noImage}</span>
+            )}
+          </span>
+        </Link>
         <span className="store-product-card__badge-overlay">
           <Badge variant={stock > 0 ? "success" : "error"}>{stock > 0 ? messages.ar.inStock : messages.ar.outOfStock}</Badge>
         </span>
-      </Link>
+        <FavoriteButton name={translation.name} slug={translation.slug} />
+      </div>
       <div className="store-product-card__content">
         {product.category?.translations[0] && <p className="store-product-card__category">{product.category.translations[0].name}</p>}
         <h2><Link href={`/ar/products/${encodeURIComponent(translation.slug)}`}>{translation.name}</Link></h2>
@@ -45,9 +54,17 @@ export function ProductCard({ product, currency }: ProductCardProps) {
           <div className="store-product-card__price-box">
             {minPrice && currency ? <strong>{formatMoney(minPrice, currency)}</strong> : <span className="store-muted">{currency ? messages.ar.unavailable : messages.ar.currencyUnavailable}</span>}
           </div>
-          <Link className="store-product-card__action" href={`/ar/products/${encodeURIComponent(translation.slug)}`}>
-            {messages.ar.viewProduct}
-          </Link>
+          {quickAddSku ? (
+            <form action={addToCartAction} className="store-product-card__quick-add">
+              <input name="skuId" type="hidden" value={quickAddSku.id} />
+              <input name="quantity" type="hidden" value="1" />
+              <StorefrontSubmitButton pendingText={messages.ar.adding}>{messages.ar.addToCart}</StorefrontSubmitButton>
+            </form>
+          ) : (
+            <Link className="store-product-card__action" href={`/ar/products/${encodeURIComponent(translation.slug)}`}>
+              {messages.ar.viewProduct}
+            </Link>
+          )}
         </div>
       </div>
     </Card>

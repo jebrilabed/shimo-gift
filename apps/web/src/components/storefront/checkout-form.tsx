@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Input, Textarea } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { storefrontMessages as messages } from "@/lib/storefront/messages";
 import { submitCheckoutAction, type CheckoutActionState } from "@/app/[locale]/(store)/actions";
 import { phase7Messages as phase7 } from "@/lib/phase7/messages";
@@ -62,7 +63,7 @@ export function CheckoutForm({
       <Input autoComplete="address-level2" defaultValue={values?.city} label={messages.ar.city} maxLength={120} name="city" required error={fieldError("city")} />
       </>}
       <Textarea defaultValue={values?.customerNote} label={messages.ar.note} maxLength={2000} name="customerNote" rows={4} error={fieldError("customerNote")} />
-      {state.error && <p className="store-alert store-alert--error" role="alert">{state.error}</p>}
+      <ToastMessage eventKey={state} message={state.error} tone="error" />
       {(state.error === messages.ar.checkoutCartChanged || state.error === messages.ar.stockChanged || state.error === messages.ar.cartInvalid) && <Link href="/ar/cart">{messages.ar.reviewCart}</Link>}
       <Button loading={pending} type="submit">{messages.ar.placeOrder}</Button>
     </form>

@@ -3,7 +3,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
-import { CategoryStatus, Locale, ProductStatus } from "@/generated/prisma/enums";
+import { CartStatus, CategoryStatus, Locale, OrderStatus, ProductStatus } from "@/generated/prisma/enums";
 import { requireAdmin } from "@/lib/auth/authorization";
 import { adminMessages } from "@/lib/admin/messages";
 import type { AdminActionState } from "@/lib/admin/config";
@@ -243,7 +243,7 @@ export async function saveProduct(_previous: AdminActionState, formData: FormDat
     revalidatePath("/ar/products");
     revalidatePath("/ar/products/[slug]", "page");
     revalidatePath("/sitemap.xml");
-    return { success: messages.productSaved, ...(!productId ? { redirectTo: "/admin/products" } : {}) };
+    return { success: messages.productSaved, redirectTo: "/admin/products" };
   });
 }
 
@@ -366,7 +366,7 @@ export async function saveCategory(_previous: AdminActionState, formData: FormDa
     revalidatePath("/ar/categories/[slug]", "page");
     revalidatePath("/ar/products/[slug]", "page");
     revalidatePath("/sitemap.xml");
-    return { success: messages.categorySaved, ...(!categoryId ? { redirectTo: "/admin/categories" } : {}) };
+    return { success: messages.categorySaved, redirectTo: "/admin/categories" };
   });
 }
 
@@ -418,6 +418,78 @@ export async function archiveProduct(_previous: AdminActionState, formData: Form
     revalidatePath("/admin/inventory");
     revalidatePath("/ar"); revalidatePath("/ar/products"); revalidatePath("/ar/products/[slug]", "page"); revalidatePath("/sitemap.xml");
     return { success: messages.productArchived };
+  });
+}
+
+export async function deleteProduct(_previous: AdminActionState, formData: FormData): Promise<AdminActionState> {
+  return runAdminAction(async (admin): Promise<AdminActionState> => {
+    const id = String(formData.get("productId") ?? "").trim();
+    if (!id || id.length > 64) return { error: messages.productNotFound };
+
+    const result = await prisma.$transaction(async (tx) => {
+      const locked = await tx.$queryRaw<{ id: string }[]>(Prisma.sql`
+        SELECT "id" FROM "products" WHERE "id" = ${id} FOR UPDATE
+      `);
+      if (!locked.length) return "missing" as const;
+
+      const product = await tx.product.findUnique({
+        where: { id },
+        select: { id: true, slug: true, skus: { select: { id: true } } },
+      });
+      if (!product) return "missing" as const;
+
+      const skuIds = product.skus.map(({ id: skuId }) => skuId);
+      if (skuIds.length) {
+        const orderItems = await tx.orderItem.findMany({
+          where: { skuId: { in: skuIds } },
+          select: { order: { select: { status: true } } },
+        });
+        if (orderItems.some(({ order }) => order.status === OrderStatus.PENDING || order.status === OrderStatus.CONFIRMED || order.status === OrderStatus.PROCESSING)) {
+          return "active-order" as const;
+        }
+
+        const cartItems = await tx.cartItem.findMany({
+          where: { skuId: { in: skuIds } },
+          select: { cart: { select: { status: true, expiresAt: true } } },
+        });
+        const now = new Date();
+        if (cartItems.some(({ cart }) => cart.status === CartStatus.ACTIVE && (!cart.expiresAt || cart.expiresAt > now))) {
+          return "active-cart" as const;
+        }
+
+        // Keep historical order snapshots while detaching them from the SKU.
+        await tx.orderItem.updateMany({ where: { skuId: { in: skuIds } }, data: { skuId: null } });
+        await tx.cartItem.deleteMany({ where: { skuId: { in: skuIds } } });
+        await tx.productSku.deleteMany({ where: { id: { in: skuIds } } });
+      }
+      await tx.productImage.deleteMany({ where: { productId: id } });
+      await tx.productTranslation.deleteMany({ where: { productId: id } });
+      await tx.adminAuditLog.create({
+        data: {
+          actorUserId: admin.id,
+          action: "catalog.product.delete",
+          entityType: "Product",
+          entityId: id,
+          metadata: { slug: product.slug },
+        },
+      });
+      await tx.product.delete({ where: { id } });
+      return "deleted" as const;
+    });
+
+    if (result === "missing") return { error: messages.productNotFound };
+    if (result === "active-cart") return { error: messages.productDeleteBlockedByCart };
+    if (result === "active-order") return { error: messages.productDeleteBlockedByOrder };
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/products");
+    revalidatePath("/admin/categories");
+    revalidatePath("/admin/inventory");
+    revalidatePath("/ar");
+    revalidatePath("/ar/products");
+    revalidatePath("/ar/products/[slug]", "page");
+    revalidatePath("/sitemap.xml");
+    return { success: messages.productDeleted };
   });
 }
 

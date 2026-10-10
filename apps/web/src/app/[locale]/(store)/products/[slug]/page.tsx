@@ -91,7 +91,9 @@ export default async function ProductDetails({ params }: { params: Promise<{ loc
         <article className="store-product-detail">
           <div className="store-product-detail__gallery">
             <div className="store-product-detail__image">
-              {firstImage ? <SafeProductImage alt={firstImage.altText || translation.name} sizes="(max-width: 960px) 100vw, 50vw" priority src={firstImage.url} /> : <span className="store-image-empty">{messages.ar.noImage}</span>}
+              <span className="store-product-detail__image-media">
+                {firstImage ? <SafeProductImage alt={firstImage.altText || translation.name} sizes="(max-width: 960px) 100vw, 50vw" priority src={firstImage.url} /> : <span className="store-image-empty">{messages.ar.noImage}</span>}
+              </span>
             </div>
             {product.images.length > 1 && <div className="store-product-detail__thumbnails">{product.images.slice(1).map((image, index) => <div className="store-product-detail__thumbnail" key={`${image.url}-${index}`}><SafeProductImage alt={image.altText || `${translation.name} ${index + 2}`} sizes="84px" src={image.url} /></div>)}</div>}
           </div>

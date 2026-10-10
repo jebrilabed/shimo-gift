@@ -32,40 +32,41 @@
   color-scheme: light;
 
   /* Brand colors */
-  --brand-primary: #e8799e;
-  --brand-primary-hover: #d95f87;
-  --brand-secondary: #fdf0f5;
-  --brand-secondary-hover: #fce2ec;
-  --brand-accent: #c4456f;
-  --logo-background: #f8a4c4;
+  --brand-primary: #6a0d25;
+  --brand-primary-hover: #4a0517;
+  --brand-secondary: #f7f3ee;
+  --brand-secondary-hover: #efe5e2;
+  --brand-accent: #775a19;
+  --brand-gold: #c5a059;
+  --logo-background: #4a0517;
 
-  --surface-canvas: #fdf9fa;
+  --surface-canvas: #fdfbf7;
   --surface-raised: #ffffff;
-  --text-primary: #1a181b;
-  --text-muted: #6e626b;
-  --border-subtle: #f0d5e1;
-  --surface-skeleton: #f7e4ec;
+  --text-primary: #1a1a1a;
+  --text-muted: #655c58;
+  --border-subtle: #eadbce;
+  --surface-skeleton: #f0e7dc;
   --surface-scrim: rgba(26, 24, 27, 0.52);
 
   --status-success: #2e7d32;
   --status-warning: #d97706;
   --status-error: #dc2626;
-  --status-info: #e8799e;
+  --status-info: #6a0d25;
 
-  --font-arabic: "Alexandria", "Cairo", "Noto Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-arabic: "Plus Jakarta Sans", "Cairo", "Noto Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-editorial: "Noto Serif", "Cairo", Georgia, serif;
   --space-page-gutter: clamp(1rem, 4vw, 2.5rem);
   --space-section: clamp(2rem, 5vw, 4rem);
   --space-stack: 1.25rem;
-  --container-max: 76rem;
+  --container-max: 90rem;
   --container-reading: 48rem;
-  --shape-radius-card: 1.25rem;
-  --shape-radius-control: 0.75rem;
-  --shape-radius-pill: 999px;
-  --elevation-card: 0 10px 30px -10px rgba(232, 121, 158, 0.12), 0 4px 16px rgba(26, 24, 27, 0.03);
+  --shape-radius-card: 0.5rem;
+  --shape-radius-control: 0.25rem;
+  --shape-radius-pill: 0.35rem;
+  --elevation-card: 0 12px 32px -8px rgba(74, 5, 23, 0.08), 0 2px 8px rgba(26, 24, 27, 0.025);
   --motion-fast: 150ms;
   --motion-standard: 250ms;
   --duration-fast: 150ms;
   --duration-standard: 250ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
-

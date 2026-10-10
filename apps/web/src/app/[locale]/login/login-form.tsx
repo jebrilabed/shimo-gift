@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { Button, Input } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { loginAction } from "./actions";
 
 export function LoginForm() {
@@ -27,7 +28,7 @@ export function LoginForm() {
         required
         type="password"
       />
-      {state.error && <p className="text-sm text-red-700" role="alert">{state.error}</p>}
+      <ToastMessage eventKey={state} message={state.error} tone="error" />
       <Button loading={pending} type="submit">
         دخول
       </Button>

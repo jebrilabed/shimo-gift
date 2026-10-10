@@ -27,10 +27,6 @@ export default async function CategoriesPage({ searchParams }: CategoriesPagePro
       take: ADMIN_PAGE_SIZE,
       include: {
         translations: { where: { locale: "AR" }, take: 1 },
-        products: {
-          orderBy: { createdAt: "desc" },
-          select: { id: true, slug: true, translations: { where: { locale: "AR" }, take: 1, select: { name: true } } },
-        },
         _count: { select: { products: true, children: true } },
       },
     }),
@@ -55,7 +51,7 @@ export default async function CategoriesPage({ searchParams }: CategoriesPagePro
               <td><Link href={`/admin/categories/${category.id}`}>{name}</Link></td>
               <td><div className="admin-category-description">{translation?.description || "—"}</div></td>
               <td><Badge variant={category.status === "ACTIVE" ? "success" : "warning"}>{category.status === "ACTIVE" ? messages.ar.active : messages.ar.archived}</Badge></td>
-              <td><div className="admin-category-product-list">{category.products.length ? category.products.map((product) => <Link href={`/admin/products/${product.id}`} key={product.id}>{product.translations[0]?.name ?? product.slug}</Link>) : <span>—</span>}</div></td>
+              <td>{category._count.products}</td>
               <td><div className="admin-row-actions"><Link className="ui-button ui-button--ghost ui-button--small" href={`/admin/categories/${category.id}`}>{messages.ar.edit}</Link>
                 {blocked ? <span className="admin-field-error">{blockedText}</span> : <ActionForm action={deleteCategory} fields={{ categoryId: category.id }} label={messages.ar.delete} confirmMessage={messages.ar.deleteCategoryConfirm} variant="ghost" />}
               </div></td>

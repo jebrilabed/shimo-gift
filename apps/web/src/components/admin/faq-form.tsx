@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { Card, Input, Textarea } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import type { AdminActionState } from "@/lib/admin/config";
 import { saveFaq } from "@/app/(admin)/admin/content/actions";
 import { SubmitButton } from "./submit-button";
@@ -22,9 +23,9 @@ export function FaqForm({ values }: { values: FaqFormValues }) {
       <Input label="ترتيب العرض" name="sortOrder" type="number" min={0} max={999999} step={1} defaultValue={values.sortOrder} error={error("sortOrder")} />
     </div>
     <label className="admin-checkbox"><input defaultChecked={values.isActive} name="isActive" type="checkbox" /><span>منشور ويظهر للعامة</span></label>
-    {state.error && <p className="admin-feedback admin-feedback--error" role="alert">{state.error}</p>}
-    {state.success && <p className="admin-feedback admin-feedback--success" role="status">{state.success}</p>}
-    {state.fieldErrors && <p className="admin-feedback admin-feedback--error" role="alert">{Object.values(state.fieldErrors).join(" ")}</p>}
+    <ToastMessage eventKey={state} message={state.error} tone="error" />
+    <ToastMessage eventKey={state} message={state.success} tone="success" />
+    <ToastMessage eventKey={state} message={state.fieldErrors ? Object.values(state.fieldErrors).join(" ") : undefined} tone="warning" />
     <div className="admin-page__actions"><SubmitButton>حفظ السؤال</SubmitButton><Link className="ui-button ui-button--ghost" href="/admin/content/faq">إلغاء</Link></div>
   </form></Card>;
 }

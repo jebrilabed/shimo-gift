@@ -30,11 +30,12 @@ test("storefront product images use responsive delivery, preserve fallback, and 
   assert.match(detail, /SafeProductImage[^\n]+priority/);
 });
 
-test("the AI panel is split from the always-rendered launcher and loads only after opening", () => {
+test("the optional AI assistant is not mounted in the global storefront layout", () => {
   const layout = source("../src/app/[locale]/(store)/layout.tsx");
   const launcher = source("../src/components/storefront/store-assistant-launcher.tsx");
   const panel = source("../src/components/storefront/store-assistant.tsx");
-  assert.match(layout, /StoreAssistantLauncher/);
+  assert.doesNotMatch(layout, /StoreAssistantLauncher/);
+  assert.doesNotMatch(layout, /assistant\.css/);
   assert.doesNotMatch(layout, /from .*store-assistant"/);
   assert.match(launcher, /lazy\(\(\) => import\("\.\/store-assistant"\)/);
   assert.match(launcher, /loaded && <Suspense/);

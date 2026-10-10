@@ -94,6 +94,7 @@ export async function saveStoreSettings(_previous: SettingsState, formData: Form
     console.error("Store settings save failed.", { code });
     return { error: messages.ar.settingsFailed };
   }
+  revalidatePath("/admin");
   revalidatePath("/admin/settings");
   revalidatePath("/ar");
   revalidatePath("/ar/cart");

@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { Input } from "@/components/ui";
+import { ToastMessage } from "@/components/ui/toast";
 import { adminMessages as messages } from "@/lib/admin/messages";
 import type { AdminActionState } from "@/lib/admin/config";
 import { updateInventory } from "@/app/(admin)/admin/actions";
@@ -18,7 +19,7 @@ export function InventoryQuantityForm({ skuId, productId, quantity }: { skuId: s
     <input type="hidden" name="productId" value={productId} />
     <Input name="quantity" label={messages.ar.quantity} type="number" min="0" max="999999999" step="1" value={quantityValue} onChange={(event) => setQuantityValue(event.target.value)} error={state.error} />
     <SubmitButton>{messages.ar.updateStock}</SubmitButton>
-    {state.error && <span className="admin-form-feedback admin-form-feedback--error" role="alert">{state.error}</span>}
-    {state.success && <span className="admin-form-feedback admin-form-feedback--success" role="status">{state.success}</span>}
+    <ToastMessage eventKey={state} message={state.error} tone="error" />
+    <ToastMessage eventKey={state} message={state.success} tone="success" />
   </form>;
 }

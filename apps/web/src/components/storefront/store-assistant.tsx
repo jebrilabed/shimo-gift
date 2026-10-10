@@ -24,12 +24,12 @@ export function StoreAssistant({ locale = "ar", onClose, onThreadsAvailable, hid
   const endRef = useRef<HTMLDivElement>(null);
   const isArabic = locale === "ar";
   const text = isArabic ? {
-    title: "اسألي شيمو", close: "إغلاق المساعد", input: "اكتبي سؤالك هنا…",
+    title: "مساعد Shimo Gift", close: "إغلاق المساعد", input: "اكتبي سؤالك هنا…",
     send: "إرسال", loading: "أفكر…", welcome: "مرحبًا! أستطيع مساعدتك في المنتجات ومعلومات المتجر والطلبات.",
     unavailable: "المساعد غير متاح مؤقتًا. حاولي مرة أخرى لاحقًا.", auth: "سجّلي الدخول لاستخدام المساعد ومراجعة طلباتك.",
     retry: "إعادة المحاولة", newChat: "محادثة جديدة", error: "تعذر تحميل المحادثة.",
   } : {
-    title: "Ask Shimo", close: "Close assistant", input: "Ask a question…",
+    title: "Ask Shimo Gift", close: "Close assistant", input: "Ask a question…",
     send: "Send", loading: "Thinking…", welcome: "Hello! I can help with products, store information, and your orders.",
     unavailable: "The assistant is temporarily unavailable. Please try again later.", auth: "Sign in to use the assistant and check your orders.",
     retry: "Try again", newChat: "New chat", error: "Could not load this conversation.",
